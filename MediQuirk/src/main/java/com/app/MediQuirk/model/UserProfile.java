@@ -26,10 +26,12 @@ public class UserProfile {
 
     @NotBlank
     private String dateOfBirth;
+    @NotBlank
+    private String address;
 
     private String profilePictureUrl;
 
     @OneToOne
     @JoinColumn(name = "userId")
-    private User user;
+    private Users user;
 }

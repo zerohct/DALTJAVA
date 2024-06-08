@@ -21,5 +21,5 @@ public class Role {
     private String roleDescription;
 
     @ManyToMany(mappedBy = "roles", fetch = FetchType.LAZY)
-    private Set<User> users;
+    private Set<Users> users;
 }
