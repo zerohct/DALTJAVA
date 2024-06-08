@@ -3,6 +3,8 @@ package com.app.MediQuirk.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
+
+import java.math.BigDecimal;
 import java.util.Set;
 
 @Entity
@@ -16,18 +18,25 @@ public class Product {
     private Long productId;
 
     @NotBlank
+    @Size(max = 255)
     private String productName;
 
     private String description;
 
-    @NotBlank
-    private String price;
+    @NotNull
+    @DecimalMin(value = "0.0", inclusive = false)
+    private BigDecimal price;
 
     private String imageUrl;
 
     private boolean prescriptionRequired;
 
+    @Min(0)
     private int stockQuantity;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "supplier_id")
+    private Supplier supplier;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "categoryId")
