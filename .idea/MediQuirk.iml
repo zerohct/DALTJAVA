@@ -4,7 +4,8 @@
     <content url="file://$MODULE_DIR$">
       <excludeFolder url="file://$MODULE_DIR$/MediQuirk/src/main/java/com/app/MediQuirk/controller/HomeController" />
       <excludeFolder url="file://$MODULE_DIR$/MediQuirk/src/main/resources/templates/Admin" />
-      <excludeFolder url="file://$MODULE_DIR$/MediQuirk/src/main/resources/templates/User/fragements" />
+      <excludeFolder url="file://$MODULE_DIR$/MediQuirk/src/main/resources/static/images/logo" />
+      <excludeFolder url="file://$MODULE_DIR$/MediQuirk/src/main/resources/templates/User/fragments" />
     </content>
   </component>
 </module>
