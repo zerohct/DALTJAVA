@@ -10,34 +10,40 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-@Controller // Đánh dấu lớp này là một Controller trong Spring MVC.
+
+@Controller
 @RequestMapping("/")
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
+
     @GetMapping("/login")
     public String login() {
         return "User/users/login";
     }
+
     @GetMapping("/register")
     public String register(@NotNull Model model) {
-        model.addAttribute("user", new Users()); // Thêm một đối tượng User mới vào model
+        model.addAttribute("user", new Users());
         return "User/users/register";
     }
+
     @PostMapping("/register")
-    public String register(@Valid @ModelAttribute("user") Users users, // Validate đối tượng User
-                                   @NotNull BindingResult bindingResult, // Kết quả của quátrình validate
- Model model) {
-        if (bindingResult.hasErrors()) { // Kiểm tra nếu có lỗi validate
+    public String register(@Valid @ModelAttribute("user") Users user,
+                           @NotNull BindingResult bindingResult,
+                           Model model) {
+        if (bindingResult.hasErrors()) {
             var errors = bindingResult.getAllErrors()
                     .stream()
                     .map(DefaultMessageSourceResolvable::getDefaultMessage)
                     .toArray(String[]::new);
             model.addAttribute("errors", errors);
-            return "User/users/register"; // Trả về lại view "register" nếu có lỗi
+            return "User/users/register";
         }
-        userService.save(users); // Lưu người dùng vào cơ sở dữ liệu
-        userService.setDefaultRole(users.getUsername()); // Gán vai trò mặc định chongười dùng
-        return "redirect:/login"; // Chuyển hướng người dùng tới trang "login"
+
+        userService.save(user);
+        userService.setDefaultRole(user.getUsername(), false);
+
+        return "redirect:/login";
     }
 }

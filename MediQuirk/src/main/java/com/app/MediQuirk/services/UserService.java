@@ -1,48 +1,42 @@
 package com.app.MediQuirk.services;
 
-import com.app.MediQuirk.Role;
+import com.app.MediQuirk.model.Role;
 import com.app.MediQuirk.model.Users;
 import com.app.MediQuirk.repository.IRoleRepository;
 import com.app.MediQuirk.repository.IUserRepository;
 import jakarta.validation.constraints.NotNull;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.util.Optional;
+
 @Service
 @Slf4j
 @Transactional
+@RequiredArgsConstructor
 public class UserService implements UserDetailsService {
-    @Autowired
-    private IUserRepository userRepository;
-    @Autowired
-    private IRoleRepository roleRepository;
-    // Lưu người dùng mới vào cơ sở dữ liệu sau khi mã hóa mật khẩu.
+
+    private final IUserRepository userRepository;
+    private final IRoleRepository roleRepository;
+
+
     public void save(@NotNull Users user) {
         user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
         userRepository.save(user);
     }
-    // Gán vai trò mặc định cho người dùng dựa trên tên người dùng.
-    public void setDefaultRole(String username) {
-        userRepository.findByUsername(username).ifPresentOrElse(
-                user -> {
 
-                    user.getRoles().add(roleRepository.findRoleById(Role.USER.value));
-                    userRepository.save(user);
-                },
-                () -> { throw new UsernameNotFoundException("User not found"); }
-        );}
-    // Tải thông tin chi tiết người dùng để xác thực.
     @Override
-    public UserDetails loadUserByUsername(String username) throws
-            UsernameNotFoundException {
-        var user = userRepository.findByUsername(username)
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        Users user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
         return org.springframework.security.core.userdetails.User
                 .withUsername(user.getUsername())
                 .password(user.getPassword())
@@ -53,9 +47,27 @@ public class UserService implements UserDetailsService {
                 .disabled(!user.isEnabled())
                 .build();
     }
-    // Tìm kiếm người dùng dựa trên tên đăng nhập.
-    public Optional<Users> findByUsername(String username) throws
-            UsernameNotFoundException {
+
+    public Optional<Users> findByUsername(String username) {
         return userRepository.findByUsername(username);
+    }
+
+    public void setDefaultRole(String username, boolean isAdminCreated) {
+        Optional<Users> optionalUser = userRepository.findByUsername(username);
+        if (optionalUser.isPresent()) {
+            Users user = optionalUser.get();
+            String roleName = isAdminCreated ? "ADMIN" : "USER";
+            Optional<Role> optionalRole = roleRepository.findByName(roleName);
+            if (optionalRole.isPresent()) {
+                Role defaultRole = optionalRole.get();
+                user.getRoles().add(defaultRole);
+                userRepository.save(user);
+                log.info("Assigned default role {} to user {}", defaultRole.getName(), username);
+            } else {
+                log.error("Role {} not found", roleName);
+            }
+        } else {
+            throw new UsernameNotFoundException("User not found");
+        }
     }
 }

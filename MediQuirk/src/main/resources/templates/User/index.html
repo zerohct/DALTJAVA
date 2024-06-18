@@ -1,62 +1,9 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="User/fragments/head ::head"></head>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/User/layout}">
 <body>
-<div class="menu-btn">
-    <i class="fas fa-bars fa-2x"></i>
-</div>
-
-<div class="container">
-    <!-- Nav -->
-    <nav th:replace="User/fragments/header ::header"></nav>
-
-    <header class="showcase">
-        <h2>Mua với giá hời</h2>
-        <p>
-            Hãy mua ngay hôm nay với giá hời, giảm 30% cho từng mặt hàng chương trình diễn ra đến hết tháng 6 này.
-        </p>
-        <a href="#" class="btn">
-            Mua ngay<i class="fas fa-chevron-right"></i>
-        </a>
-    </header>
-
-    <!--body-->
-    <div class="medicine-store">
-        <div class="medicine-slide">
-            <h1 class="content">Thuốc tìm kiếm nhiều nhất</h1>
-            <div class="medicine js-flickity">
-                <div class="medicine-cell">
-                    <div class="medicine-img">
-                        <img th:src="@{/images/medicine/cough-drop.jpg}" alt=""
-                             class="medicine-photo">
-                    </div>
-                    <div class="medicine-content">
-                        <div class="medicine-title">Thuốc ho Bảo Thanh</div>
-                        <div class="medicine-author">Nhà sản xuất: Dược phẩm Hoa Linh</div>
-                        <div class="rate">
-                            <fieldset class="rating">
-                                <input type="checkbox" id="star5" name="rating" value="5"/>
-                                <label class="full" for="star5"></label>
-                                <input type="checkbox" id="star4" name="rating" value="4"/>
-                                <label class="full" for="star4"></label>
-                                <input type="checkbox" id="star3" name="rating" value="3"/>
-                                <label class="full" for="star3"></label>
-                                <input type="checkbox" id="star2" name="rating" value="2"/>
-                                <label class="full" for="star2"></label>
-                                <input type="checkbox" id="star1" name="rating" value="1"/>
-                                <label class="full" for="star1"></label>
-                            </fieldset>
-                            <span class="medicine-voters"></span>
-                        </div>
-                        <div class="medicine-sum">Thuốc ho Bảo Thanh được sản xuất bởi công ty dược Hoa Linh
-                            với thành phần chính là các vị thuốc ,....
-                        </div>
-                        <div class="medicine-see">Xem thêm</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
+<section layout:fragment="content">
         <div class="main-wrapper">
             <div class="popular-medicines">
                 <div class="main-menu">
@@ -102,11 +49,8 @@
             </div>
 
         </div>
-        <div th:replace="User/fragments/khuyenmai ::coupon"></div>
-        <footer th:replace="User/fragments/footer ::footer"></footer>
     </div>
 
-
-</div>
+</section>
 </body>
 </html>
