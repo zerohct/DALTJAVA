@@ -20,7 +20,7 @@ import java.util.Set;
 public class Role implements GrantedAuthority {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long role_id;
+    private Long roleID;
     @NotBlank(message = "Name is required")
     @Column(name = "name", length = 50, nullable = false)
     @Size(max = 50, message = "Name must be less than 50 characters")
@@ -40,7 +40,7 @@ public class Role implements GrantedAuthority {
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return
                 false;
         Role role = (Role) o;
-        return getRole_id() != null && Objects.equals(getRole_id(), role.getRole_id());
+        return getRoleID() != null && Objects.equals(getRoleID(), role.getRoleID());
     }
     @Override
     public int hashCode() {

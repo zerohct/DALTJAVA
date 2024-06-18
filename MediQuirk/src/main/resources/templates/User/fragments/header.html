@@ -1,10 +1,11 @@
 <nav class="main-nav" th:fragment="header">
-    <img src="/images/logo/logo1.png" alt="MediQuirk" class="logo">
+    <img th:src="@{/images/logo/logo1.png}" alt="MediQuirk" class="logo">
     <p>MediQuirk</p>
     <ul class="left-menu">
         <li><a href="#">Trang chủ</a></li>
         <li><a href="#">Danh mục</a></li>
     </ul>
+
 
     <ul class="right-menu">
         <li>
@@ -16,6 +17,19 @@
             <a href="#">
                 <i class="bi bi-cart3"></i>
             </a>
+            <span class="nav-item d-flex align-items-center" sec:authorize="isAuthenticated()">
+                <span class="navbar-text text-white">
+                    Xin chào, <span sec:authentication="name" class="mr-4"></span>
+                </span>
+            </span>
+        </li>
+        <li>
+            <a class="btn btn-outline-light" href="/login" sec:authorize="!isAuthenticated()">Login</a>
+<!--            <a class="btn btn-outline-light" href="/register" sec:authorize="!isAuthenticated()">Register</a>-->
+<!--            <form th:action="@{/logout}" method="post" sec:authorize="isAuthenticated()">-->
+<!--                <button class="btn btn-outline-light" type="submit">Logout</button>-->
+<!--            </form>-->
         </li>
     </ul>
 </nav>
+</html>
