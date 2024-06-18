@@ -1,25 +1,49 @@
 package com.app.MediQuirk.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.*;
+import org.hibernate.Hibernate;
+import org.springframework.security.core.GrantedAuthority;
+import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
-
-@Entity
-@Data
-@NoArgsConstructor
+@Getter
+@Setter
+@ToString
+@RequiredArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Role {
+@Entity
+@Table(name = "role")
+public class Role implements GrantedAuthority {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long roleId;
-
-    @NotBlank
-    private String roleName;
-
-    private String roleDescription;
-
-    @ManyToMany(mappedBy = "roles", fetch = FetchType.LAZY)
-    private Set<Users> users;
+    private Long role_id;
+    @NotBlank(message = "Name is required")
+    @Column(name = "name", length = 50, nullable = false)
+    @Size(max = 50, message = "Name must be less than 50 characters")
+    private String name;
+    @Size(max = 250, message = "Description must be less than 250 characters")
+    @Column(name = "description", length = 250)
+    private String description;
+    @ManyToMany(mappedBy = "roles", cascade = CascadeType.ALL)
+    @ToString.Exclude
+    private Set<Users> users = new HashSet<>();
+    @Override
+    public String getAuthority() {
+        return name;
+    }
+    @Override
+    public boolean equals(Object o) {if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return
+                false;
+        Role role = (Role) o;
+        return getRole_id() != null && Objects.equals(getRole_id(), role.getRole_id());
+    }
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 }
