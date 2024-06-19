@@ -44,8 +44,6 @@ public class Users implements UserDetails {
     @Pattern(regexp = "^[0-9]*$", message = "Phone must be number")
     private String phone;
 
-    @Column(name = "address", length = 50)
-    private String address;
     @Column(name = "IsActive", length = 50)
     private String IsActive;
     @ManyToMany(fetch=FetchType.EAGER)
@@ -53,6 +51,12 @@ public class Users implements UserDetails {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private UserProfile userProfile;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<ProductReview> productReviews;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<Orders> orders;
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Set<Role> userRoles = this.getRoles();
@@ -60,30 +64,7 @@ public class Users implements UserDetails {
                 .map(role -> new SimpleGrantedAuthority(role.getName()))
                 .toList();
     }
-    @Override
-    public String getPassword() {
-        return password;
-    }
-    @Override
-    public String getUsername() {
-        return username;
-    }
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

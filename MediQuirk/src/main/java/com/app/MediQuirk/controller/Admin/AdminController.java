@@ -21,4 +21,5 @@ public class AdminController {
         model.addAttribute("products", productService.getAllProducts());
         return "Admin/product";
     }
+
 }

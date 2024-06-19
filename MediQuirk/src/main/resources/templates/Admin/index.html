@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeless.org" >
-<head th:replace="Admin/fragments/head ::head"></head>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/Admin/layout}">
 <body>
-<main>
-    <div th:replace="Admin/fragments/sidebar :: sidebar"></div>
-</main>
-<script th:src="@{/js/admin/app.js}"></script>
+<section layout:fragment="content">
+
+</section>
 </body>
 </html>
