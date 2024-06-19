@@ -26,6 +26,7 @@ public class UserProfile {
 
     @NotBlank
     private String dateOfBirth;
+
     @NotBlank
     private String address;
 
