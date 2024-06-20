@@ -62,8 +62,12 @@ ul {
 .main-nav ul {
   display: flex;
 }
+.main-nav .left-menu a{
+    color: #262626;
+    text-decoration: none;
 
-.main-nav ul li {
+}
+.main-nav .left-menu  li {
   padding: 0 10px;
 }
 
@@ -86,7 +90,7 @@ ul {
   display: inline-block;
   border: 0;
   font-weight: bold;
-  padding: 10px 20px;
+  padding: 10px;
   background: #262626;
   color: #fff;
   font-size: 15px;
