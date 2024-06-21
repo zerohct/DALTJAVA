@@ -34,6 +34,10 @@ public class Users implements UserDetails {
     @NotBlank(message = "Password is required")
     private String password;
 
+    @Transient
+    @NotBlank(message = "Confirm Password is required")
+    private String confirmPassword;
+
     @Column(name = "email", length = 50, unique = true)
     @Size(min = 1, max = 50, message = "Email must be between 1 and 50 characters")
     @Email
@@ -64,6 +68,8 @@ public class Users implements UserDetails {
                 .map(role -> new SimpleGrantedAuthority(role.getName()))
                 .toList();
     }
+
+
 
     @Override
     public boolean equals(Object o) {
