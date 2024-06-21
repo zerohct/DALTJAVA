@@ -3,6 +3,7 @@ package com.app.MediQuirk.controller.Admin;
 import com.app.MediQuirk.model.Product;
 import com.app.MediQuirk.services.CategoryService;
 import com.app.MediQuirk.services.ProductService;
+import com.app.MediQuirk.services.SupplierService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,6 +24,8 @@ public class ProductController {
 
     @Autowired
     private CategoryService categoryService;
+    @Autowired
+    private SupplierService supplierService;
 
     private static final String UPLOADED_FOLDER = "src/main/resources/static/images/";
 
@@ -36,6 +39,7 @@ public class ProductController {
     public String showAddForm(Model model) {
         model.addAttribute("product", new Product());
         model.addAttribute("categories", categoryService.getAllCategories());
+        model.addAttribute("suppliers", supplierService.getAllSuppliers());
         return "Admin/products/add-product";
     }
 
