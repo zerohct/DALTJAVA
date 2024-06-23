@@ -3,6 +3,8 @@ package com.app.MediQuirk.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
+
+import java.util.Date;
 import java.util.Set;
 
 @Entity
@@ -25,7 +27,7 @@ public class UserProfile {
     private String gender;
 
     @NotBlank
-    private String dateOfBirth;
+    private Date dateOfBirth;
 
     @NotBlank
     private String address;
