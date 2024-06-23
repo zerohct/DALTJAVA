@@ -43,7 +43,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
-                        .requestMatchers("/css/**", "/js/**", "/", "/oauth/**", "/register", "/error",
+                        .requestMatchers("/css/**", "/oauth/**" ,"/js/**", "/", "/oauth/**", "/register", "/error",
                                 "/products", "/cart", "/cart/**", "/images/**").permitAll()
                         .requestMatchers("/products/edit/**", "/products/add", "/products/delete").hasAuthority("ADMIN")
                         .requestMatchers("/api/**").permitAll()
@@ -60,6 +60,12 @@ public class SecurityConfig {
                 .formLogin(formLogin -> formLogin
                         .loginPage("/login")
                         .loginProcessingUrl("/login")
+                        .defaultSuccessUrl("/")
+                        .failureUrl("/login?error")
+                        .permitAll()
+                )
+                .oauth2Login(oauth2 -> oauth2
+                        .loginPage("/login")
                         .defaultSuccessUrl("/")
                         .failureUrl("/login?error")
                         .permitAll()

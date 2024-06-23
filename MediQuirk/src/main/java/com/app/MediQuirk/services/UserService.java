@@ -4,6 +4,7 @@ import com.app.MediQuirk.model.Role;
 import com.app.MediQuirk.model.Users;
 import com.app.MediQuirk.repository.IRoleRepository;
 import com.app.MediQuirk.repository.IUserRepository;
+import com.app.MediQuirk.repository.UserRepository;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +26,7 @@ public class UserService implements UserDetailsService {
 
     private final IUserRepository userRepository;
     private final IRoleRepository roleRepository;
-
+    private final UserRepository usersRepository;
 
     public void save(@NotNull Users user) {
         user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
@@ -52,7 +53,9 @@ public class UserService implements UserDetailsService {
     public Optional<Users> findByUsername(String username) {
         return userRepository.findByUsername(username);
     }
-
+    public Optional<Users> findByEmail(String email) {
+        return usersRepository.findByEmail(email);
+    }
     public void setDefaultRole(String username, boolean isAdminCreated) {
         Optional<Users> optionalUser = userRepository.findByUsername(username);
         if (optionalUser.isPresent()) {
@@ -71,4 +74,26 @@ public class UserService implements UserDetailsService {
             throw new UsernameNotFoundException("User not found");
         }
     }
+    public Users createUserFromOAuth2(String email, String name) {
+        Users user = new Users();
+        user.setEmail(email);
+        user.setUsername(email);
+        user.setUsername(name);
+        user.setPassword(new BCryptPasswordEncoder().encode("tempPassword"));
+
+        save(user);
+        setDefaultRole(user.getUsername(), false);
+
+        return user;
+    }
+
+    public Users processOAuth2User(String email, String name) {
+        Optional<Users> userOptional = findByEmail(email);
+        if (userOptional.isPresent()) {
+            return userOptional.get();
+        } else {
+            return createUserFromOAuth2(email, name);
+        }
+    }
+
 }

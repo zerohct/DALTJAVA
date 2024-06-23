@@ -6,6 +6,8 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -45,5 +47,15 @@ public class UserController {
         userService.setDefaultRole(user.getUsername(), false);
 
         return "redirect:/login";
+    }
+    @GetMapping("/oauth2/success")
+    public String oauth2LoginSuccess(@AuthenticationPrincipal OAuth2User principal, Model model) {
+        String email = principal.getAttribute("email");
+        String name = principal.getAttribute("name");
+
+        Users user = userService.processOAuth2User(email, name);
+
+        model.addAttribute("user", user);
+        return "redirect:/";
     }
 }

@@ -19,7 +19,6 @@ public class UsersService {
     public Users addUser(Users user) {
         return usersRepository.save(user);
     }
-
     public List<Users> getAllUsers() {
         return usersRepository.findAll();
     }
@@ -28,11 +27,20 @@ public class UsersService {
         return usersRepository.findById(id);
     }
 
-    public Users updateUser(Users user) {
+
+    public Users updateUser(Long id, Users userDetails) {
+        Users user = usersRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found with id " + id));
+        user.setUsername(userDetails.getUsername());
+        user.setPassword(userDetails.getPassword());
+        user.setEmail(userDetails.getEmail());
+        user.setPhone(userDetails.getPhone());
+        user.setIsActive(userDetails.getIsActive());
+        user.setRoles(userDetails.getRoles());
         return usersRepository.save(user);
     }
 
-    public void deleteUserById(Long id) {
-        usersRepository.deleteById(id);
+    public void deleteUser(Long id) {
+        Users user = usersRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found with id " + id));
+        usersRepository.delete(user);
     }
 }
