@@ -37,7 +37,7 @@ public class ProductController {
     @GetMapping
     public String showProductList(Model model) {
         model.addAttribute("products", productService.getAllProducts());
-        return "Admin/products/test";
+        return "Admin/products/product-list";
     }
 
     @GetMapping("/add")
@@ -84,9 +84,9 @@ public class ProductController {
         model.addAttribute("product", product);
         model.addAttribute("categories", categoryService.getAllCategories());
         model.addAttribute("suppliers", supplierService.getAllSuppliers());
-        return "Admin/products/update-product";
+        return "Admin/products/test";
     }
-    @PostMapping("/update/{id}")
+    @PostMapping("/edit/{id}")
     public String updateProduct(@PathVariable Long id,
                                 @Valid @ModelAttribute Product product,
                                 BindingResult result,
@@ -96,7 +96,7 @@ public class ProductController {
             product.setProductId(id);
             model.addAttribute("categories", categoryService.getAllCategories());
             model.addAttribute("suppliers", supplierService.getAllSuppliers());
-            return "Admin/products/update-product";
+            return "Admin/products/test";
         }
 
         try {
@@ -124,20 +124,7 @@ public class ProductController {
 
         return "redirect:/products";
     }
-    @PostMapping("/edit/{id}")
-    public String updateProduct(@PathVariable Long id,
-                                @Valid @ModelAttribute("product") Product product,
-                                BindingResult result,
-                                Model model) {
-        if (result.hasErrors()) {
-            model.addAttribute("categories", categoryService.getAllCategories());
-            model.addAttribute("suppliers", supplierService.getAllSuppliers());
-            return "Admin/products/update-product";
-        }
-        product.setProductId(id);
-        productService.updateProduct(product);
-        return "redirect:/products";
-    }
+
 
     @PostMapping("/delete/{id}")
     public String deleteProduct(@PathVariable Long id) {

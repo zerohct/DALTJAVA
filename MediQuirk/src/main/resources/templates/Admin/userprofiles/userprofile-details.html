@@ -1,28 +1,69 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/Admin/layout}">
 <head>
-    <title>UserProfile Details</title>
+    <title>User Profile Details</title>
+    <style>
+        .profile-image {
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+    </style>
 </head>
 <body>
-<h2>UserProfile Details</h2>
-<div>
-    <p>First Name: <span th:text="${userProfile.firstName}"></span></p>
-    <p>Last Name: <span th:text="${userProfile.lastName}"></span></p>
-    <p>Gender: <span th:text="${userProfile.gender}"></span></p>
-    <p>Date of Birth: <span th:text="${userProfile.dateOfBirth}"></span></p>
-    <p>Address: <span th:text="${userProfile.address}"></span></p>
-    <p>Profile Picture: <img th:src="${userProfile.profilePictureUrl}" alt="Profile Picture" /></p>
-</div>
+<section layout:fragment="content" class="max-w-4xl mx-auto px-4 py-8">
+    <div class="bg-white shadow overflow-hidden sm:rounded-lg">
+        <div class="px-4 py-5 sm:px-6">
+            <h3 class="text-lg leading-6 font-medium text-gray-900">User Profile Information</h3>
+            <p class="mt-1 max-w-2xl text-sm text-gray-500">Personal details and application.</p>
+        </div>
+        <div class="border-t border-gray-200">
+            <dl>
+                <div class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                    <dt class="text-sm font-medium text-gray-500">Profile Picture</dt>
+                    <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                        <img th:if="${userProfile.profilePictureUrl}" th:src="@{'/uploads/user/' + ${userProfile.profilePictureUrl}}" alt="User Image" class="profile-image">
+                        <span th:unless="${userProfile.profilePictureUrl}" class="text-gray-500">No profile picture</span>
+                    </dd>
+                </div>
+                <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                    <dt class="text-sm font-medium text-gray-500">Full name</dt>
+                    <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2" th:text="${userProfile.firstName + ' ' + userProfile.lastName}"></dd>
+                </div>
+                <div class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                    <dt class="text-sm font-medium text-gray-500">Gender</dt>
+                    <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2" th:text="${userProfile.gender}"></dd>
+                </div>
+                <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                    <dt class="text-sm font-medium text-gray-500">Date of Birth</dt>
+                    <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2" th:text="${#dates.format(userProfile.dateOfBirth, 'dd MMMM yyyy')}"></dd>
+                </div>
+                <div class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                    <dt class="text-sm font-medium text-gray-500">Address</dt>
+                    <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2" th:text="${userProfile.address}"></dd>
+                </div>
+                <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                    <dt class="text-sm font-medium text-gray-500">Associated User</dt>
+                    <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                        <span th:if="${userProfile.user}" th:text="${userProfile.user.username}"></span>
+                        <span th:unless="${userProfile.user}" class="text-red-500">No associated user</span>
+                    </dd>
+                </div>
+            </dl>
+        </div>
+    </div>
 
-<h2>User Details</h2>
-<div th:if="${user != null}">
-    <p>Username: <span th:text="${user.username}"></span></p>
-    <p>Email: <span th:text="${user.email}"></span></p>
-    <p>Phone: <span th:text="${user.phone}"></span></p>
-    <p>Is Active: <span th:text="${user.IsActive}"></span></p>
-</div>
-<div th:if="${user == null}">
-    <p>No associated user account.</p>
-</div>
+    <div class="mt-6 flex justify-end space-x-4">
+        <a th:href="@{/userprofiles/edit/{id}(id=${userProfile.userProfileId})}" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+            Edit Profile
+        </a>
+        <a th:href="@{/userprofiles}" class="inline-flex justify-center py-2 px-4 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+            Back to List
+        </a>
+    </div>
+</section>
 </body>
 </html>

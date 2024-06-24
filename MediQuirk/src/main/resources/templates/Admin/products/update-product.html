@@ -7,7 +7,7 @@
     <div class="bg-gray-100 dark:bg-gray-900">
         <div class="max-w-3xl mx-auto p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md">
             <h2 class="text-3xl font-semibold mb-8 text-center">Update Product</h2>
-            <form th:action="@{/products/update}" th:object="${product}" method="post" enctype="multipart/form-data"
+            <form th:action="@{/products/edit/{id}(id=${product.productId})}" th:object="${product}" method="post" enctype="multipart/form-data"
                   class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <input type="hidden" th:field="*{productId}">
                 <div>
