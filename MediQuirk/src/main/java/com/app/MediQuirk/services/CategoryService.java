@@ -37,8 +37,7 @@ public class CategoryService {
      * Add a new category to the database.
      * @param category the category to add
      */
-    public void addCategory(Category category) {
-        categoryRepository.save(category);
+    public void addCategory(Category category) {categoryRepository.save(category);
     }
 
     /**

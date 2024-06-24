@@ -1,66 +1,97 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{/Admin/layout}">
+<head>
+    <style>
+        .table-container {
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+        .truncate {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        th {
+            position: sticky;
+            top: 0;
+            background-color: #f3f4f6;
+            z-index: 10;
+        }
+        .overflow-x-auto {
+            overflow-x: auto;
+        }
+    </style>
+</head>
 <body>
-<section layout:fragment="content" class="right-content mt-4 ms-3">
-    <div class="flex justify-between items-center mb-4 mx-auto">
-        <div class="flex space-x-2">
-            <p class="fs-3 text-primary">User Profiles</p>
+<section layout:fragment="content" class="max-w-7xl mx-auto px-4 py-8">
+    <div class="flex flex-col items-center mb-6">
+        <h1 class="text-3xl font-bold text-gray-800 mb-4">User Profile Management</h1>
+        <div class="w-full flex justify-between items-center">
+            <div class="flex items-center max-w-md">
+                <input type="text" class="w-full px-4 py-2 rounded-l-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Search user profiles...">
+                <button class="bg-blue-500 text-white px-4 py-2 rounded-r-md hover:bg-blue-600 transition duration-300 ease-in-out">
+                    <i class="bi bi-search"></i>
+                </button>
+            </div>
+            <a th:href="@{/userprofiles/add}" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md shadow-md transition duration-300 ease-in-out">
+                <i class="bi bi-plus-circle mr-2"></i>Add New User Profile
+            </a>
         </div>
     </div>
-    <div class="d-flex justify-content-between align-items-center mb-3 px-3 mt-5">
-        <div class="input-group w-25">
-            <input type="text" class="form-control" placeholder="Search ...">
-            <button class="btn btn-light border border-secondary " type="button" style="border-left: none; border-top-left-radius: 0; border-bottom-left-radius: 0;">
-                <i class="bi bi-search"></i>
-            </button>
+
+    <div class="table-container bg-white rounded-lg shadow-md overflow-hidden">
+        <div class="overflow-x-auto" style="max-width: 100%;">
+            <table class="divide-y divide-gray-200" style="min-width: 1200px;">
+                <thead>
+                <tr class="bg-gray-50">
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Image</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">First Name</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Last Name</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Gender</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date of Birth</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Address</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                <tr th:each="userProfile : ${userProfiles}" class="hover:bg-gray-50">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900" th:text="${userProfile.userProfileId}"></td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <img th:src="@{/uploads/user/} + ${userProfile.profilePictureUrl}" alt="User Image" class="user-image">
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm font-medium text-gray-900 truncate max-w-xs" th:text="${userProfile.firstName}"></div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm font-medium text-gray-900 truncate max-w-xs" th:text="${userProfile.lastName}"></div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" th:text="${userProfile.gender}"></td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" th:text="${userProfile.dateOfBirth}"></td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm text-gray-500 truncate max-w-xs" th:text="${userProfile.address}"></div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <a th:href="@{/userprofiles/details/{id}(id=${userProfile.userProfileId})}" class="text-blue-600 hover:text-blue-900 mr-3">
+                            <i class="bi bi-eye"></i> Details
+                        </a>
+                        <a th:href="@{/userprofiles/edit/{id}(id=${userProfile.userProfileId})}" class="text-indigo-600 hover:text-indigo-900 mr-3">
+                            <i class="bi bi-pencil-square"></i> Edit
+                        </a>
+                        <a th:href="@{/userprofiles/delete/{id}(id=${userProfile.userProfileId})}" class="text-red-600 hover:text-red-900 mr-3" onclick="return confirm('Are you sure you want to delete this user profile?');">
+                            <i class="bi bi-trash3"></i> Delete
+                        </a>
+                        <a th:href="@{/userprofiles/{userProfileId}/add-user(userProfileId=${userProfile.userProfileId})}" class="text-green-600 hover:text-green-900">
+                            <i class="bi bi-plus-circle"></i> Add User
+                        </a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
         </div>
-        <a th:href="@{/userprofiles/add}" class="btn btn-primary">Add New UserProfile</a>
     </div>
-
-    <div class="container">
-        <table class="table table-bordered  table-striped table-hover">
-            <thead class="head-dark">
-            <tr>
-                <th scope="col" class="text-center">ID</th>
-                <th scope="col">First Name</th>
-                <th scope="col">Last Name</th>
-                <th scope="col">Gender</th>
-                <th scope="col">Date of Birth</th>
-                <th scope="col">Address</th>
-                <th scope="col">Actions</th>
-            </tr>
-            </thead>
-            <tbody>
-
-            <tr th:each="userProfile : ${userProfiles}">
-                <td th:text="${userProfile.userProfileId}" class="text-center"></td>
-                <td th:text="${userProfile.firstName}"></td>
-                <td th:text="${userProfile.lastName}"></td>
-                <td th:text="${userProfile.gender}"></td>
-                <td th:text="${userProfile.dateOfBirth}"></td>
-                <td th:text="${userProfile.address}"></td>
-                <td class="text-center ">
-                    <a th:href="@{/userprofiles/details/{id}(id=${userProfile.userProfileId})}" class="btn btn-outline-info btn-sm mr-1">
-                        <i class="bi bi-eye"></i> Details
-                    </a>
-                    <a th:href="@{/userprofiles/edit/{id}(id=${userProfile.userProfileId})}" class="btn btn-outline-primary btn-sm mr-1">
-                        <i class="bi bi-pencil-square"></i> Edit
-                    </a>
-                    <a th:href="@{/userprofiles/delete/{id}(id=${userProfile.userProfileId})}" class="btn btn-outline-danger btn-sm"
-                       onclick="return confirm('Are you sure you want to delete this user profile?');">
-                        <i class="bi bi-trash3"></i> Delete
-                    </a>
-                    <a th:href="@{/userprofiles/{userProfileId}/add-user(userProfileId=${userProfile.userProfileId})}" class="btn btn-outline-success btn-sm">
-                        <i class="bi bi-plus-circle"></i> Add User
-                    </a>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
-
 </section>
 </body>
 </html>

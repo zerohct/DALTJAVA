@@ -11,8 +11,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
+import java.util.UUID;
 
 @Controller
 @RequiredArgsConstructor
@@ -24,24 +30,39 @@ public class UserProfileController {
     @Autowired
     private final UsersService usersService;
 
-    // GET request to show add user profile form
+    private static final String UPLOADED_FOLDER = "src/main/resources/static/uploads/user";
+
     @GetMapping("/userprofiles/add")
     public String showAddForm(Model model) {
         model.addAttribute("userProfile", new UserProfile());
         return "Admin/userprofiles/add-userprofile";
     }
 
-    // POST request to add a new user profile
     @PostMapping("/userprofiles/add")
-    public String addUserProfile(@Valid UserProfile userProfile, BindingResult result, Model model) {
+    public String addUserProfile(@Valid @ModelAttribute UserProfile userProfile,
+                                 BindingResult result,
+                                 @RequestParam("file") MultipartFile file,
+                                 Model model) {
         if (result.hasErrors()) {
             return "Admin/userprofiles/add-userprofile";
         }
-        userProfileService.addUserProfile(userProfile);
+
+        try {
+            if (!file.isEmpty()) {
+                String fileName = saveFile(file);
+                userProfile.setProfilePictureUrl(fileName);
+            }
+
+            userProfileService.addUserProfile(userProfile);
+        } catch (IOException e) {
+            e.printStackTrace();
+            model.addAttribute("errorMessage", "An error occurred while saving the file.");
+            return "Admin/userprofiles/add-userprofile";
+        }
+
         return "redirect:/userprofiles";
     }
 
-    // GET request to show list of user profiles
     @GetMapping("/userprofiles")
     public String listUserProfiles(Model model) {
         List<UserProfile> userProfiles = userProfileService.getAllUserProfiles();
@@ -49,7 +70,6 @@ public class UserProfileController {
         return "Admin/userprofiles/userprofile-list";
     }
 
-    // GET request to show user profile edit form
     @GetMapping("/userprofiles/edit/{id}")
     public String showUpdateForm(@PathVariable("id") Long id, Model model) {
         UserProfile userProfile = userProfileService.getUserProfileById(id)
@@ -58,19 +78,41 @@ public class UserProfileController {
         return "Admin/userprofiles/update-userprofile";
     }
 
-    // POST request to update user profile
     @PostMapping("/userprofiles/update/{id}")
-    public String updateUserProfile(@PathVariable("id") Long id, @Valid UserProfile userProfile, BindingResult result, Model model) {
+    public String updateUserProfile(@PathVariable("id") Long id,
+                                    @Valid @ModelAttribute UserProfile userProfile,
+                                    BindingResult result,
+                                    @RequestParam("file") MultipartFile file,
+                                    Model model) {
         if (result.hasErrors()) {
-            userProfile.setUserProfileId(id); // Ensure the ID is set before returning the form with errors
+            userProfile.setUserProfileId(id);
             return "Admin/userprofiles/update-userprofile";
         }
-        userProfile.setUserProfileId(id); // Ensure the ID is set before updating
-        userProfileService.updateUserProfile(userProfile);
+
+        try {
+            UserProfile existingUserProfile = userProfileService.getUserProfileById(id)
+                    .orElseThrow(() -> new IllegalArgumentException("Invalid user profile Id:" + id));
+
+            if (!file.isEmpty()) {
+                String fileName = saveFile(file);
+                existingUserProfile.setProfilePictureUrl(fileName);
+            }
+
+            // Update other fields
+            existingUserProfile.setFirstName(userProfile.getFirstName());
+            existingUserProfile.setLastName(userProfile.getLastName());
+            // Add other fields as needed
+
+            userProfileService.updateUserProfile(existingUserProfile);
+        } catch (IOException e) {
+            e.printStackTrace();
+            model.addAttribute("errorMessage", "An error occurred while saving the file.");
+            return "Admin/userprofiles/update-userprofile";
+        }
+
         return "redirect:/userprofiles";
     }
 
-    // GET request for deleting user profile
     @GetMapping("/userprofiles/delete/{id}")
     public String deleteUserProfile(@PathVariable("id") Long id, Model model) {
         UserProfile userProfile = userProfileService.getUserProfileById(id)
@@ -79,7 +121,6 @@ public class UserProfileController {
         return "redirect:/userprofiles";
     }
 
-    // GET request to show user profile details
     @GetMapping("/userprofiles/details/{id}")
     public String showUserProfileDetails(@PathVariable("id") Long id, Model model) {
         UserProfile userProfile = userProfileService.getUserProfileById(id)
@@ -89,7 +130,6 @@ public class UserProfileController {
         return "Admin/userprofiles/userprofile-details";
     }
 
-    // GET request to show add user form for a user profile
     @GetMapping("/userprofiles/{userProfileId}/add-user")
     public String showAddUserForm(@PathVariable("userProfileId") Long userProfileId, Model model) {
         model.addAttribute("user", new Users());
@@ -97,7 +137,6 @@ public class UserProfileController {
         return "Admin/userprofiles/add-user";
     }
 
-    // POST request to add a user for a user profile
     @PostMapping("/userprofiles/{userProfileId}/add-user")
     public String addUser(@PathVariable("userProfileId") Long userProfileId, @Valid Users user, BindingResult result, Model model) {
         if (result.hasErrors()) {
@@ -109,5 +148,16 @@ public class UserProfileController {
         usersService.addUser(user);
         userProfileService.updateUserProfile(userProfile);
         return "redirect:/userprofiles";
+    }
+
+    private String saveFile(MultipartFile file) throws IOException {
+        String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
+        Path uploadDir = Paths.get(UPLOADED_FOLDER);
+        if (!Files.exists(uploadDir)) {
+            Files.createDirectories(uploadDir);
+        }
+        Path filePath = uploadDir.resolve(fileName);
+        Files.write(filePath, file.getBytes());
+        return fileName;
     }
 }
