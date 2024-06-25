@@ -8,7 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class OrderService {
@@ -44,5 +47,21 @@ public class OrderService {
         ordersRepository.save(order);
 
         return order;
+    }
+    public long getOrderCount() {
+        return ordersRepository.count();
+    }
+
+    public Map<String, Long> getOrderCountByStatus() {
+        List<Orders> orders = ordersRepository.findAll();
+        return orders.stream()
+                .collect(Collectors.groupingBy(Orders::getOrderStatus, Collectors.counting()));
+    }
+
+    public List<Orders> getAllOrders() {
+        return ordersRepository.findAll();
+    }
+    public Orders getOrderById(Long orderId) {
+        return ordersRepository.findById(orderId).orElseThrow(() -> new RuntimeException("Order not found"));
     }
 }

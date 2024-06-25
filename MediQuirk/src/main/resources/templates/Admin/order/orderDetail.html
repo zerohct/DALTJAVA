@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/Admin/layout}">
+<head>
+    <title>Order Detail</title>
+    <style>
+        .table-container {
+            overflow-x: auto;
+        }
+        .detail-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .detail-table th, .detail-table td {
+            padding: 0.75rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .detail-table th {
+            background-color: #f3f4f6;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+<section layout:fragment="content" class="max-w-7xl mx-auto px-4 py-8">
+    <div class="mb-6">
+        <h1 class="text-3xl font-bold text-gray-800 mb-4">Order Detail</h1>
+        <a href="/orders/dashboard" class="text-blue-600 hover:text-blue-800 transition duration-300 ease-in-out">
+            <i class="bi bi-arrow-left mr-2"></i>Back to Dashboard
+        </a>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h2 class="text-xl font-semibold mb-4">Order Information</h2>
+            <table class="detail-table">
+                <tr>
+                    <th>Order ID</th>
+                    <td th:text="${order.orderId}"></td>
+                </tr>
+                <tr>
+                    <th>Date</th>
+                    <td th:text="${#temporals.format(order.orderDate, 'dd-MM-yyyy HH:mm')}"></td>
+                </tr>
+                <tr>
+                    <th>Status</th>
+                    <td>
+                        <span th:text="${order.orderStatus}"
+                              th:class="${order.orderStatus == 'Completed'} ? 'px-2 py-1 text-sm font-semibold rounded-full bg-green-100 text-green-800' : 'px-2 py-1 text-sm font-semibold rounded-full bg-yellow-100 text-yellow-800'">
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Total Amount</th>
+                    <td th:text="${#numbers.formatCurrency(order.totalAmount)}"></td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h2 class="text-xl font-semibold mb-4">User Information</h2>
+            <table class="detail-table">
+                <tr>
+                    <th>Username</th>
+                    <td th:text="${order.user.username}"></td>
+                </tr>
+                <tr>
+                    <th>Email</th>
+                    <td th:text="${order.user.email}"></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+        <h2 class="text-xl font-semibold mb-4">Order Details</h2>
+        <div class="table-container">
+            <table class="detail-table">
+                <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Quantity</th>
+                    <th>Unit Price</th>
+                    <th>Discount</th>
+                    <th>Subtotal</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="detail : ${order.orderDetails}">
+                    <td th:text="${detail.product.productName}"></td>
+                    <td th:text="${detail.quantity}"></td>
+                    <td th:text="${#numbers.formatCurrency(detail.unitPrice)}"></td>
+                    <td th:text="${#numbers.formatCurrency(detail.discount)}"></td>
+                    <td th:text="${#numbers.formatCurrency(detail.quantity * (detail.unitPrice - detail.discount))}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="bg-white rounded-lg shadow-md p-6">
+        <h2 class="text-xl font-semibold mb-4">Payment Method</h2>
+        <p class="text-gray-700" th:text="${order.paymentMethod.methodName}"></p>
+    </div>
+</section>
+</body>
+</html>
