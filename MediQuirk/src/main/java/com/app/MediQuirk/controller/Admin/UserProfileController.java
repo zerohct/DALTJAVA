@@ -2,8 +2,9 @@ package com.app.MediQuirk.controller.Admin;
 
 import com.app.MediQuirk.model.UserProfile;
 import com.app.MediQuirk.model.Users;
+import com.app.MediQuirk.services.RoleService;
 import com.app.MediQuirk.services.UserProfileService;
-import com.app.MediQuirk.services.UsersService;
+import com.app.MediQuirk.services.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +29,10 @@ public class UserProfileController {
     private final UserProfileService userProfileService;
 
     @Autowired
-    private final UsersService usersService;
+    private final UserService usersService;
+
+    @Autowired
+    private RoleService roleService;
 
     private static final String UPLOADED_FOLDER = "src/main/resources/static/uploads/user";
 
@@ -134,18 +138,22 @@ public class UserProfileController {
     public String showAddUserForm(@PathVariable("userProfileId") Long userProfileId, Model model) {
         model.addAttribute("user", new Users());
         model.addAttribute("userProfileId", userProfileId);
+        model.addAttribute("roles", roleService.getAllRoles());
         return "Admin/userprofiles/add-user";
     }
 
     @PostMapping("/userprofiles/{userProfileId}/add-user")
-    public String addUser(@PathVariable("userProfileId") Long userProfileId, @Valid Users user, BindingResult result, Model model) {
+    public String addUser(@PathVariable("userProfileId") Long userProfileId, @Valid Users user, BindingResult result, Model model, @RequestParam List<Long> roleIds) {
         if (result.hasErrors()) {
             return "Admin/userprofiles/add-user";
         }
+
         UserProfile userProfile = userProfileService.getUserProfileById(userProfileId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid user profile Id: " + userProfileId));
         userProfile.setUser(user);
+        user.setRoles(roleService.getRolesByIds(roleIds));
         usersService.addUser(user);
+
         userProfileService.updateUserProfile(userProfile);
         return "redirect:/userprofiles";
     }

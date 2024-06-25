@@ -12,10 +12,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -35,9 +35,7 @@ public class UserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
-//        Users user = userRepository.findByUsername(username)
-//                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-        Users user = userRepository.findByUsernameOrEmailOrPhone(login,login,login)
+        Users user = userRepository.findByUsernameOrEmailOrPhone(login, login, login)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
         return org.springframework.security.core.userdetails.User
                 .withUsername(user.getUsername())
@@ -53,9 +51,11 @@ public class UserService implements UserDetailsService {
     public Optional<Users> findByUsername(String username) {
         return userRepository.findByUsername(username);
     }
+
     public Optional<Users> findByEmail(String email) {
         return usersRepository.findByEmail(email);
     }
+
     public void setDefaultRole(String username, boolean isAdminCreated) {
         Optional<Users> optionalUser = userRepository.findByUsername(username);
         if (optionalUser.isPresent()) {
@@ -74,6 +74,7 @@ public class UserService implements UserDetailsService {
             throw new UsernameNotFoundException("User not found");
         }
     }
+
     public Users createUserFromOAuth2(String email, String name) {
         Users user = new Users();
         user.setEmail(email);
@@ -96,4 +97,32 @@ public class UserService implements UserDetailsService {
         }
     }
 
+    public Users addUser(Users user) {
+        user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
+        return usersRepository.save(user);
+    }
+
+    public List<Users> getAllUsers() {
+        return usersRepository.findAll();
+    }
+
+    public Optional<Users> getUserById(Long id) {
+        return usersRepository.findById(id);
+    }
+
+    public Users updateUser(Long id, Users userDetails) {
+        Users user = usersRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found with id " + id));
+        user.setUsername(userDetails.getUsername());
+        user.setPassword(new BCryptPasswordEncoder().encode(userDetails.getPassword()));
+        user.setEmail(userDetails.getEmail());
+        user.setPhone(userDetails.getPhone());
+        user.setIsActive(userDetails.getIsActive());
+        user.setRoles(userDetails.getRoles());
+        return usersRepository.save(user);
+    }
+
+    public void deleteUser(Long id) {
+        Users user = usersRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found with id " + id));
+        usersRepository.delete(user);
+    }
 }

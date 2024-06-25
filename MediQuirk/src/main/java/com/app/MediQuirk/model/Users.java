@@ -35,7 +35,6 @@ public class Users implements UserDetails {
     private String password;
 
     @Transient
-    @NotBlank(message = "Confirm Password is required")
     private String confirmPassword;
 
     @Column(name = "email", length = 50, unique = true)

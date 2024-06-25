@@ -17,7 +17,7 @@
                 <i class="bi bi-cart3 text-zinc-700 dark:text-zinc-300"></i>
             </a>
             <a class="btn d-none d-md-block bg-black text-white px-4 py-2 rounded-md" href="/login" sec:authorize="!isAuthenticated()">Login</a>
-            <span class="nav-item position-relative" sec:authorize="isAuthenticated()">
+            <span class="nav-item position-relative" sec:authorize="isAuthenticated()" id="user-menu">
                 <span class="navbar-text user-icon">
                     <i class="bi bi-person-circle btn text-zinc-700 dark:text-zinc-300"></i>
                 </span>
@@ -50,4 +50,8 @@
             </button>
         </div>
     </header>
+
+
+
+
 </nav>

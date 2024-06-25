@@ -1,9 +1,8 @@
 package com.app.MediQuirk.controller.Admin;
 
-import com.app.MediQuirk.model.Role;
 import com.app.MediQuirk.model.Users;
 import com.app.MediQuirk.services.RoleService;
-import com.app.MediQuirk.services.UsersService;
+import com.app.MediQuirk.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,7 +16,7 @@ import java.util.List;
 public class UsersController {
 
     @Autowired
-    private UsersService usersService;
+    private UserService usersService;
 
     @Autowired
     private RoleService roleService;
