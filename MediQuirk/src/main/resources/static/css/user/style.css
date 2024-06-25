@@ -54,10 +54,10 @@ ul {
   padding: 20px 0;
   font-size: 18px;
 }
-        .rounded-30 {
-            border-radius: 30px;
-            border: 2px solid #ccc;
-        }
+.rounded-30 {
+   border-radius: 30px;
+   border: 2px solid #ccc;
+}
 .main-nav .logo {
   width: 50px;
 }
