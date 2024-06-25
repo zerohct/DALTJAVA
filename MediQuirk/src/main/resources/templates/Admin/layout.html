@@ -48,5 +48,23 @@
         reader.readAsDataURL(e.target.files[0]);
     });
 </script>
+<script >
+    document.addEventListener('DOMContentLoaded', function() {
+   const navItems = document.querySelectorAll('.main-menu .nav-item a');
+   const currentPath = window.location.pathname;
+
+   navItems.forEach(item => {
+     const itemPath = item.getAttribute('href');
+
+     // Check if the current path matches the item's href
+     if (currentPath === itemPath) {
+       item.closest('.nav-item').classList.add('active');
+     } else {
+       item.closest('.nav-item').classList.remove('active');
+     }
+   });
+ });
+</script>
+
 </body>
 </html>

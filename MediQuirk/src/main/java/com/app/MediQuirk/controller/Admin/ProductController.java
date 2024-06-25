@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.UUID;
 
 @Controller
@@ -131,7 +132,12 @@ public class ProductController {
         productService.deleteProductById(id);
         return "redirect:/products";
     }
-
+    @GetMapping("/products/search")
+    public String searchProducts(@RequestParam("keyword") String keyword, Model model) {
+        List<Product> searchResults = productService.searchByProductName(keyword);
+        model.addAttribute("products", searchResults);
+        return "Admin/products/product-list :: tbody";
+    }
     private String saveFile(MultipartFile file) throws IOException {
         String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
         Path uploadDir = Paths.get(UPLOADED_FOLDER);
