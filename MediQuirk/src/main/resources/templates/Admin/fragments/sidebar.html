@@ -14,7 +14,7 @@
         <li class="nav-item" >
             <b></b>
             <b></b>
-            <a th:href="@{/products}">
+            <a th:href="@{/admin/products}">
                 <i class="bi bi-capsule nav-icon"></i>
                 <span class="nav-text">Medicines</span>
             </a>
@@ -23,7 +23,7 @@
         <li class="nav-item" t>
             <b></b>
             <b></b>
-            <a th:href="@{/categories}">
+            <a th:href="@{/admin/categories}">
                 <i class="bi bi-receipt nav-icon"></i>
                 <span class="nav-text">Categories</span>
             </a>
@@ -32,7 +32,7 @@
         <li class="nav-item" >
             <b></b>
             <b></b>
-            <a th:href="@{/orders/dashboard}">
+            <a th:href="@{/admin/orders/dashboard}">
                 <i class="bi bi-cart3 nav-icon"></i>
                 <span class="nav-text">Orders</span>
             </a>
@@ -41,7 +41,7 @@
         <li class="nav-item" >
             <b></b>
             <b></b>
-            <a th:href="@{/userprofiles}">
+            <a th:href="@{/admin/userprofiles}">
                 <i class="bi bi-person nav-icon"></i>
                 <span class="nav-text">Users</span>
             </a>
@@ -49,7 +49,7 @@
         <li class="nav-item" >
             <b></b>
             <b></b>
-            <a th:href="@{/users}">
+            <a th:href="@{/admin/users}">
                 <i class="bi bi-person nav-icon"></i>
                 <span class="nav-text">Account</span>
             </a>
@@ -57,7 +57,7 @@
         <li class="nav-item" >
             <b></b>
             <b></b>
-            <a th:href="@{/suppliers}">
+            <a th:href="@{/admin/suppliers}">
                 <i class="bi bi-building nav-icon"></i>
                 <span class="nav-text">Suppliers</span>
             </a>
@@ -75,10 +75,11 @@
         <li class="nav-item" >
             <b></b>
             <b></b>
-            <a th:href="@{/logout}">
-                <i class="bi bi-box-arrow-left nav-icon"></i>
-                <span class="nav-text">Logout</span>
-            </a>
+            <form th:action="@{/logout}" method="post">
+                <button type="submit">
+                    <i class="bi bi-box-arrow-right icon"></i>Logout
+                </button>
+            </form>
         </li>
     </ul>
 </nav>

@@ -14,6 +14,7 @@ import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
+@RequestMapping("/admin")
 public class SupplierController {
 
     @Autowired
@@ -33,7 +34,7 @@ public class SupplierController {
             return "Admin/suppliers/add-supplier";
         }
         supplierService.addSupplier(supplier);
-        return "redirect:/suppliers";
+        return "redirect:/admin/suppliers";
     }
 
     // GET request to show list of suppliers
@@ -62,7 +63,7 @@ public class SupplierController {
         }
         supplier.setSupplierId(id); // Ensure the ID is set before updating
         supplierService.updateSupplier(supplier);
-        return "redirect:/suppliers";
+        return "redirect:/admin/suppliers";
     }
 
     // GET request for deleting supplier
@@ -71,6 +72,6 @@ public class SupplierController {
         Supplier supplier = supplierService.getSupplierById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid supplier Id: " + id));
         supplierService.deleteSupplierById(id);
-        return "redirect:/suppliers";
+        return "redirect:/admin/suppliers";
     }
 }

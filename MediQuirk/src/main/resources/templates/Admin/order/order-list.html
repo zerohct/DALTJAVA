@@ -84,7 +84,7 @@
                         <div class="text-sm text-gray-900 truncate max-w-xs" th:text="${order.user.username}"></div>
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                        <a th:href="@{/orders/detail/{id}(id=${order.orderId})}" class="text-indigo-600 hover:text-indigo-900">
+                        <a th:href="@{/admin/orders/detail/{id}(id=${order.orderId})}" class="text-indigo-600 hover:text-indigo-900">
                             <i class="bi bi-eye"></i> View Details
                         </a>
                     </td>

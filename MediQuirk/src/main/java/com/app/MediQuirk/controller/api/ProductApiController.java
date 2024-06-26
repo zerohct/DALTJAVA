@@ -15,11 +15,8 @@ public class ProductApiController {
 
     @Autowired
     private ProductService productService;
-    @GetMapping
-    public String showProductPage() {
-        return "api/product-api";
-    }
-    @GetMapping("/all")
+
+    @GetMapping()
     public List<Product> getAllProducts() {
         return productService.getAllProducts();
     }

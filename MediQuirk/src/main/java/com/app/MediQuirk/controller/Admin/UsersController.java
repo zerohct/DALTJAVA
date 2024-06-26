@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Controller
-@RequestMapping("/users")
+@RequestMapping("/admin/users")
 public class UsersController {
 
     @Autowired
@@ -43,7 +43,7 @@ public class UsersController {
         }
         user.setRoles(roleService.getRolesByIds(roleIds));
         usersService.addUser(user);
-        return "redirect:/users";
+        return "redirect:/admin/users";
     }
 
     @GetMapping("/edit/{id}")
@@ -68,12 +68,12 @@ public class UsersController {
         }
         user.setRoles(roleService.getRolesByIds(roleIds));
         usersService.updateUser(id, user);
-        return "redirect:/users";
+        return "redirect:/admin/users";
     }
 
     @GetMapping("/delete/{id}")
     public String deleteUser(@PathVariable("id") Long id, Model model) {
         usersService.deleteUser(id);
-        return "redirect:/users";
+        return "redirect:/admin/users";
     }
 }
