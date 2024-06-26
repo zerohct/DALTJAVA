@@ -7,7 +7,7 @@
     <div class="bg-gray-100 dark:bg-gray-900">
         <div class="max-w-3xl mx-auto p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md">
             <h2 class="text-3xl font-semibold mb-8 text-center">Update User Profile</h2>
-            <form th:action="@{/users/update/{id}(id=${user.user_id})}" th:object="${user}" method="post" class="space-y-6 needs-validation" novalidate>
+            <form th:action="@{/admin/users/update/{id}(id=${user.user_id})}" th:object="${user}" method="post" class="space-y-6 needs-validation" novalidate>
 
                 <div class="flex justify-between space-x-4">
                     <div class="w-1/2">
@@ -82,7 +82,7 @@
                             class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
                         Update Profile
                     </button>
-                    <a th:href="@{/users}"
+                    <a th:href="@{/admin/users}"
                        class="ml-4 bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50">Cancel</a>
                 </div>
             </form>

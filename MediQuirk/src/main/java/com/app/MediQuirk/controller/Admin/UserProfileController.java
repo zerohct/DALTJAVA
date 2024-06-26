@@ -23,6 +23,7 @@ import java.util.UUID;
 
 @Controller
 @RequiredArgsConstructor
+@RequestMapping("/admin")
 public class UserProfileController {
 
     @Autowired
@@ -64,7 +65,7 @@ public class UserProfileController {
             return "Admin/userprofiles/add-userprofile";
         }
 
-        return "redirect:/userprofiles";
+        return "redirect:/admin/userprofiles";
     }
 
     @GetMapping("/userprofiles")
@@ -114,7 +115,7 @@ public class UserProfileController {
             return "Admin/userprofiles/update-userprofile";
         }
 
-        return "redirect:/userprofiles";
+        return "redirect:/admin/userprofiles";
     }
 
     @GetMapping("/userprofiles/delete/{id}")
@@ -122,7 +123,7 @@ public class UserProfileController {
         UserProfile userProfile = userProfileService.getUserProfileById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid user profile Id: " + id));
         userProfileService.deleteUserProfileById(id);
-        return "redirect:/userprofiles";
+        return "redirect:/admin/userprofiles";
     }
 
     @GetMapping("/userprofiles/details/{id}")
@@ -155,7 +156,7 @@ public class UserProfileController {
         usersService.addUser(user);
 
         userProfileService.updateUserProfile(userProfile);
-        return "redirect:/userprofiles";
+        return "redirect:/admin/userprofiles";
     }
 
     private String saveFile(MultipartFile file) throws IOException {

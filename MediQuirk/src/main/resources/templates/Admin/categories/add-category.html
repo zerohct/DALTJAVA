@@ -9,7 +9,7 @@
             <div class="bg-gray-100 dark:bg-gray-900">
                 <div class="p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md">
                     <h2 class="text-3xl font-semibold mb-8 text-center">Add New Category</h2>
-                    <form th:action="@{/categories/add}" th:object="${category}" method="post"
+                    <form th:action="@{/admin/categories/add}" th:object="${category}" method="post"
                           class="grid grid-cols-1 gap-6">
                         <div>
                             <label for="categoryName" class="block text-sm font-medium mb-2">Category Name:</label>
@@ -32,7 +32,7 @@
                                     class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
                                 Add Category
                             </button>
-                            <a th:href="@{/categories}"
+                            <a th:href="@{/admin/categories}"
                                class="ml-4 bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50">Cancel</a>
                         </div>
                     </form>

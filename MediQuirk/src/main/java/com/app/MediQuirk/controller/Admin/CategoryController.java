@@ -11,11 +11,13 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
+@RequestMapping("/admin")
 public class CategoryController {
 
     @Autowired
@@ -35,7 +37,7 @@ public class CategoryController {
             return "Admin/categories/add-category";
         }
         categoryService.addCategory(category);
-        return "redirect:/categories";
+        return "redirect:/admin/categories";
     }
 
     // GET request to show list of categories
@@ -64,7 +66,7 @@ public class CategoryController {
         }
         category.setCategoryId(id); // Ensure the ID is set before updating
         categoryService.updateCategory(category);
-        return "redirect:/categories";
+        return "redirect:/admin/categories";
     }
 
     // GET request for deleting category
@@ -73,6 +75,6 @@ public class CategoryController {
         Category category = categoryService.getCategoryById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid category Id: " + id));
         categoryService.deleteCategoryById(id);
-        return "redirect:/categories";
+        return "redirect:/admin/categories";
     }
 }

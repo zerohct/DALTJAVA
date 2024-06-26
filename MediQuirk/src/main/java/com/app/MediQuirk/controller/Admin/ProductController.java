@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Controller
-@RequestMapping("/products")
+@RequestMapping("/admin/products")
 public class ProductController {
 
     @Autowired
@@ -75,7 +75,7 @@ public class ProductController {
             return "Admin/products/add-product";
         }
 
-        return "redirect:/products";
+        return "redirect:/admin/products";
     }
 
     @GetMapping("/edit/{id}")
@@ -85,7 +85,7 @@ public class ProductController {
         model.addAttribute("product", product);
         model.addAttribute("categories", categoryService.getAllCategories());
         model.addAttribute("suppliers", supplierService.getAllSuppliers());
-        return "Admin/products/test";
+        return "Admin/products/update-product";
     }
     @PostMapping("/edit/{id}")
     public String updateProduct(@PathVariable Long id,
@@ -97,7 +97,7 @@ public class ProductController {
             product.setProductId(id);
             model.addAttribute("categories", categoryService.getAllCategories());
             model.addAttribute("suppliers", supplierService.getAllSuppliers());
-            return "Admin/products/test";
+            return "Admin/products/update-product";
         }
 
         try {
@@ -123,14 +123,14 @@ public class ProductController {
             e.printStackTrace();
         }
 
-        return "redirect:/products";
+        return "redirect:/admin/products";
     }
 
 
     @PostMapping("/delete/{id}")
     public String deleteProduct(@PathVariable Long id) {
         productService.deleteProductById(id);
-        return "redirect:/products";
+        return "redirect:/admin/products";
     }
     @GetMapping("/products/search")
     public String searchProducts(@RequestParam("keyword") String keyword, Model model) {
