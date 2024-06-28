@@ -23,7 +23,7 @@ import java.util.Set;
 public class Users implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long user_id;
+    private Long userId;
 
     @Column(name = "username", length = 50, unique = true)
     @NotBlank(message = "Username is required")
@@ -75,7 +75,7 @@ public class Users implements UserDetails {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return
                 false;Users user = (Users) o;
-        return getUser_id() != null && Objects.equals(getUser_id(), user.getUser_id());
+        return getUserId() != null && Objects.equals(getUserId(), user.getUserId());
     }
     @Override
     public int hashCode() {

@@ -58,7 +58,7 @@ public class UsersController {
     public String updateUser(@PathVariable("id") Long id, @ModelAttribute("user") Users user, @RequestParam List<Long> roleIds, BindingResult result, Model model) {
         if (result.hasErrors()) {
             model.addAttribute("roles", roleService.getAllRoles());
-            user.setUser_id(id);
+            user.setUserId(id);
             return "Admin/users/update";
         }
         if (!user.getPassword().equals(user.getConfirmPassword())) {

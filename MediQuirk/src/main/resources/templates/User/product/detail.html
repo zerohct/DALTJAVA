@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/User/layout}">
+<head>
+    <title th:text="${product.productName}">Product Detail</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+</head>
+<body class="bg-gray-100">
+<div layout:fragment="content" class="container mx-auto px-4 py-8">
+    <div class="bg-white rounded-lg shadow-lg p-6">
+        <div class="flex flex-col md:flex-row gap-8">
+            <!-- Product Image -->
+            <div class="md:w-1/4">
+                <img th:src="@{/images/medicine/} + ${product.imageUrl}" th:alt="${product.productName}" class="w-full h-auto rounded-lg shadow-md">
+            </div>
+
+            <!-- Product Details -->
+            <div class="md:w-3/4">
+                <h1 class="text-3xl font-bold mb-2" th:text="${product.productName}">Ruby Rubber Tree</h1>
+                <h2 class="text-xl text-gray-600 italic mb-4" th:text="${product.category.categoryName}">Ficus elastica ruby</h2>
+                <div class="flex items-center mb-4">
+                    <div class="flex text-yellow-400">
+                        <i class="bi bi-star"></i>
+                        <i class="bi bi-star"></i>
+                        <i class="bi bi-star"></i>
+                        <i class="bi bi-star"></i>
+                        <i class="bi bi-star-half-alt"></i>
+                    </div>
+                    <span class="ml-2 text-gray-600">(786 reviews)</span>
+                </div>
+                <p class="text-gray-700 mb-4" th:text="${product.description}">Dramatic darling will be a staple in your home for years to come. The leaves of this plant have a unique, painted effect in coral pink and yellow.</p>
+                <div class="text-3xl font-bold mb-4" th:text="${product.price + ' Đồng'}">£86</div>
+
+                <div class="bg-gray-100 p-4 rounded-lg mb-4">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="font-semibold">One time purchase</span>
+                        <span class="font-bold" th:text="${product.price +' Đồng'}">86.00</span>
+                    </div>
+                    <div class="flex justify-between items-center mb-4">
+                        <span class="font-semibold">Subscribe and save</span>
+                        <span class="font-bold text-green-600" th:text="${(product.price * 0.9) + ' Đồng'}">£77.00</span>
+                    </div>
+                    <form th:action="@{/cart/add}" method="post">
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="font-semibold">Quantity</span>
+                            <div class="flex items-center border rounded bg-white">
+                                <button type="button" class="px-3 py-1" onclick="decrementQuantity()">-</button>
+                                <input type="number" name="quantity" id="quantity" value="1" min="1" class="w-12 text-center border-x">
+                                <button type="button" class="px-3 py-1" onclick="incrementQuantity()">+</button>
+                            </div>
+                        </div>
+                        <input type="hidden" name="productId" th:value="${product.productId}">
+                        <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition duration-300">Add to cart</button>
+                    </form>
+                </div>
+
+                <p class="text-gray-600 text-sm flex items-center">
+                    <i class="bi fa-shield-alt mr-2 text-green-600"></i>
+                    90-Day money back guarantee
+                </p>
+                <p class="text-gray-600 text-sm flex items-center mt-2">
+                    <i class="bi fa-truck mr-2 text-blue-600"></i>
+                    Free shipping on orders over 50.000 Đồng
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-white shadow-lg rounded-lg p-6 mb-8">
+        <h2 class="text-2xl font-bold text-gray-900 mb-6">Customer Reviews</h2>
+
+<!--        &lt;!&ndash; Review Form &ndash;&gt;-->
+<!--        <div class="mb-8 border-b pb-8">-->
+<!--            <h3 class="text-xl font-semibold mb-4">Write a Review</h3>-->
+<!--            <form th:action="@{/reviews/add}" method="post" th:object="${productReview}">-->
+<!--                <div class="mb-4">-->
+<!--                    <label class="block text-sm font-medium text-gray-700 mb-2">Your Rating</label>-->
+<!--                    <div class="flex flex-wrap gap-2">-->
+<!--                        <label th:each="i : ${#numbers.sequence(1, 5)}" class="inline-flex items-center">-->
+<!--                            <input type="radio" th:field="*{rating}" th:value="${i}" class="form-radio h-5 w-5 text-blue-600">-->
+<!--                            <span class="ml-2 text-gray-700" th:text="${i}">1</span>-->
+<!--                        </label>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <div class="mb-4">-->
+<!--                    <label for="comment" class="block text-sm font-medium text-gray-700 mb-2">Your Review</label>-->
+<!--                    <textarea id="comment" th:field="*{comment}" rows="4"-->
+<!--                              class="w-full px-3 py-2 text-gray-700 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"-->
+<!--                              placeholder="Share your thoughts about the product..."></textarea>-->
+<!--                </div>-->
+<!--                <input type="hidden" th:field="*{product.productId}" th:value="${product.productId}">-->
+<!--                <button type="submit"-->
+<!--                        class="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-300">-->
+<!--                    Submit Review-->
+<!--                </button>-->
+<!--            </form>-->
+<!--        </div>-->
+
+        <!-- Reviews List -->
+        <div class="space-y-6">
+            <div th:each="review : ${reviews}" class="border-b border-gray-200 pb-6 last:border-b-0">
+                <div class="flex items-center mb-2">
+                    <div class="flex items-center">
+                        <span class="text-lg font-semibold mr-2" th:text="${review.rating + '/5'}">5/5</span>
+                        <div class="flex text-yellow-400">
+                            <i th:each="i : ${#numbers.sequence(1, review.rating)}" class="fas fa-star"></i>
+                            <i th:each="i : ${#numbers.sequence(review.rating + 1, 5)}" class="far fa-star"></i>
+                        </div>
+                    </div>
+                </div>
+                <p class="text-gray-700 mb-2" th:text="${review.comment}">Excellent product! The quality exceeded my expectations.</p>
+                <div class="flex items-center text-sm text-gray-500">
+                    <span th:text="${review.user.username}" class="font-medium mr-2">John Doe</span>
+                    <span th:text="${#temporals.format(review.reviewDate, 'MMMM d, yyyy')}">June 1, 2023</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pagination (if needed) -->
+        <div class="mt-8 flex justify-center" th:if="${reviews.totalPages > 1}">
+            <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+                <a th:href="@{${'/product/' + product.productId}(page=${reviews.number - 1})}"
+                   th:class="${reviews.first} ? 'opacity-50 cursor-not-allowed' : ''"
+                   class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                    Previous
+                </a>
+                <a th:each="pageNumber : ${#numbers.sequence(0, reviews.totalPages - 1)}"
+                   th:href="@{${'/product/' + product.productId}(page=${pageNumber})}"
+                   th:text="${pageNumber + 1}"
+                   th:class="${pageNumber == reviews.number} ? 'z-10 bg-blue-50 border-blue-500 text-blue-600' : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50'"
+                   class="relative inline-flex items-center px-4 py-2 border text-sm font-medium">
+                </a>
+                <a th:href="@{${'/product/' + product.productId}(page=${reviews.number + 1})}"
+                   th:class="${reviews.last} ? 'opacity-50 cursor-not-allowed' : ''"
+                   class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                    Next
+                </a>
+            </nav>
+        </div>
+    </div>
+</div>
+
+<script>
+    function decrementQuantity() {
+        const quantityInput = document.getElementById('quantity');
+        const currentValue = parseInt(quantityInput.value);
+        if (currentValue > 1) {
+            quantityInput.value = currentValue - 1;
+        }
+    }
+
+    function incrementQuantity() {
+        const quantityInput = document.getElementById('quantity');
+        const currentValue = parseInt(quantityInput.value);
+        quantityInput.value = currentValue + 1;
+    }
+</script>
+</body>
+</html>
