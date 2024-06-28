@@ -41,7 +41,7 @@ public class DataInitializer {
                 // Tạo người dùng admin
                 Users admin = new Users();
                 admin.setUsername("admin");
-                admin.setPassword(passwordEncoder.encode("{bcrypt}$2a$10$cJT14ctLKdeRFTxYaBohTekV1OUpjmFTHMXF3XpEMdSg2qHhs/Vsa"));
+                admin.setPassword(passwordEncoder.encode("{bcrypt}$2a$10$nPVgRH4iRBbtMUsLQ9sF.uDkopomEQvM5oB.I3j9xXMziNcWbA31C"));
 
                 // Thiết lập vai trò ADMIN cho người dùng admin
                 Set<Role> roles = new HashSet<>();
