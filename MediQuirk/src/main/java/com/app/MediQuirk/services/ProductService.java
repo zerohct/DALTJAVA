@@ -71,6 +71,10 @@ public class ProductService {
         return productRepository.save(existingProduct);
     }
 
+    public Optional<Product> findProductByNameAndSupplier(String productName, String supplierName) {
+        return productRepository.findByProductNameAndSupplierName(productName, supplierName);
+    }
+
     // Delete a product by its id
     public void deleteProductById(Long id) {
         if (!productRepository.existsById(id)) {

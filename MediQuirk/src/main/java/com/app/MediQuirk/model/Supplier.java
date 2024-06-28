@@ -15,14 +15,20 @@ public class Supplier {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long supplierId;
 
+
     @NotBlank
     private String supplierName;
 
     @Pattern(regexp = "^(\\+\\d{1,3}[- ]?)?\\d{10}$")
     private String phone;
 
+    @NotBlank
+    @Size(max = 255)
+    private String name;
+
     @Email
     private String email;
+
 
     private String contactName;
 
