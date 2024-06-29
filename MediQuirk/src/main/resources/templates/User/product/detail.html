@@ -68,8 +68,8 @@
         </div>
     </div>
 
-    <div class="bg-white shadow-lg rounded-lg p-6 mb-8">
-        <h2 class="text-2xl font-bold text-gray-900 mb-6">Customer Reviews</h2>
+<!--    <div class="bg-white shadow-lg rounded-lg p-6 mb-8">-->
+<!--        <h2 class="text-2xl font-bold text-gray-900 mb-6">Customer Reviews</h2>-->
 
 <!--        &lt;!&ndash; Review Form &ndash;&gt;-->
 <!--        <div class="mb-8 border-b pb-8">-->
@@ -98,48 +98,48 @@
 <!--            </form>-->
 <!--        </div>-->
 
-        <!-- Reviews List -->
-        <div class="space-y-6">
-            <div th:each="review : ${reviews}" class="border-b border-gray-200 pb-6 last:border-b-0">
-                <div class="flex items-center mb-2">
-                    <div class="flex items-center">
-                        <span class="text-lg font-semibold mr-2" th:text="${review.rating + '/5'}">5/5</span>
-                        <div class="flex text-yellow-400">
-                            <i th:each="i : ${#numbers.sequence(1, review.rating)}" class="fas fa-star"></i>
-                            <i th:each="i : ${#numbers.sequence(review.rating + 1, 5)}" class="far fa-star"></i>
-                        </div>
-                    </div>
-                </div>
-                <p class="text-gray-700 mb-2" th:text="${review.comment}">Excellent product! The quality exceeded my expectations.</p>
-                <div class="flex items-center text-sm text-gray-500">
-                    <span th:text="${review.user.username}" class="font-medium mr-2">John Doe</span>
-                    <span th:text="${#temporals.format(review.reviewDate, 'MMMM d, yyyy')}">June 1, 2023</span>
-                </div>
-            </div>
-        </div>
+<!--        &lt;!&ndash; Reviews List &ndash;&gt;-->
+<!--        <div class="space-y-6">-->
+<!--            <div th:each="review : ${reviews}" class="border-b border-gray-200 pb-6 last:border-b-0">-->
+<!--                <div class="flex items-center mb-2">-->
+<!--                    <div class="flex items-center">-->
+<!--                        <span class="text-lg font-semibold mr-2" th:text="${review.rating + '/5'}">5/5</span>-->
+<!--                        <div class="flex text-yellow-400">-->
+<!--                            <i th:each="i : ${#numbers.sequence(1, review.rating)}" class="fas fa-star"></i>-->
+<!--                            <i th:each="i : ${#numbers.sequence(review.rating + 1, 5)}" class="far fa-star"></i>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <p class="text-gray-700 mb-2" th:text="${review.comment}">Excellent product! The quality exceeded my expectations.</p>-->
+<!--                <div class="flex items-center text-sm text-gray-500">-->
+<!--                    <span th:text="${review.user.username}" class="font-medium mr-2">John Doe</span>-->
+<!--                    <span th:text="${#temporals.format(review.reviewDate, 'MMMM d, yyyy')}">June 1, 2023</span>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
 
-        <!-- Pagination (if needed) -->
-        <div class="mt-8 flex justify-center" th:if="${reviews.totalPages > 1}">
-            <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
-                <a th:href="@{${'/product/' + product.productId}(page=${reviews.number - 1})}"
-                   th:class="${reviews.first} ? 'opacity-50 cursor-not-allowed' : ''"
-                   class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
-                    Previous
-                </a>
-                <a th:each="pageNumber : ${#numbers.sequence(0, reviews.totalPages - 1)}"
-                   th:href="@{${'/product/' + product.productId}(page=${pageNumber})}"
-                   th:text="${pageNumber + 1}"
-                   th:class="${pageNumber == reviews.number} ? 'z-10 bg-blue-50 border-blue-500 text-blue-600' : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50'"
-                   class="relative inline-flex items-center px-4 py-2 border text-sm font-medium">
-                </a>
-                <a th:href="@{${'/product/' + product.productId}(page=${reviews.number + 1})}"
-                   th:class="${reviews.last} ? 'opacity-50 cursor-not-allowed' : ''"
-                   class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
-                    Next
-                </a>
-            </nav>
-        </div>
-    </div>
+<!--        &lt;!&ndash; Pagination (if needed) &ndash;&gt;-->
+<!--        <div class="mt-8 flex justify-center" th:if="${reviews.totalPages > 1}">-->
+<!--            <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">-->
+<!--                <a th:href="@{${'/product/' + product.productId}(page=${reviews.number - 1})}"-->
+<!--                   th:class="${reviews.first} ? 'opacity-50 cursor-not-allowed' : ''"-->
+<!--                   class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">-->
+<!--                    Previous-->
+<!--                </a>-->
+<!--                <a th:each="pageNumber : ${#numbers.sequence(0, reviews.totalPages - 1)}"-->
+<!--                   th:href="@{${'/product/' + product.productId}(page=${pageNumber})}"-->
+<!--                   th:text="${pageNumber + 1}"-->
+<!--                   th:class="${pageNumber == reviews.number} ? 'z-10 bg-blue-50 border-blue-500 text-blue-600' : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50'"-->
+<!--                   class="relative inline-flex items-center px-4 py-2 border text-sm font-medium">-->
+<!--                </a>-->
+<!--                <a th:href="@{${'/product/' + product.productId}(page=${reviews.number + 1})}"-->
+<!--                   th:class="${reviews.last} ? 'opacity-50 cursor-not-allowed' : ''"-->
+<!--                   class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">-->
+<!--                    Next-->
+<!--                </a>-->
+<!--            </nav>-->
+<!--        </div>-->
+<!--    </div>-->
 </div>
 
 <script>

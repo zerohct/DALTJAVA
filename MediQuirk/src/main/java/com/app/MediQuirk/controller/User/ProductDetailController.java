@@ -33,6 +33,10 @@ public class ProductDetailController {
         model.addAttribute("suppliers", supplierService.getAllSuppliers());
 
 
-        return "User/product/detail";
+        return "/User/product/detail";
+    }
+    @GetMapping("/management")
+    public String showProductManagement() {
+        return "/api/product-api";
     }
 }

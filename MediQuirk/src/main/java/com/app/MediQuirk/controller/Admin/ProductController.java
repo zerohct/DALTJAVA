@@ -12,13 +12,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
-import java.util.UUID;
 
 @Controller
 @RequestMapping("/admin/products")
@@ -32,8 +27,6 @@ public class ProductController {
 
     @Autowired
     private SupplierService supplierService;
-
-    private static final String UPLOADED_FOLDER = "src/main/resources/static/images/medicine";
 
     @GetMapping
     public String showProductList(Model model) {
@@ -61,12 +54,7 @@ public class ProductController {
         }
 
         try {
-            if (!file.isEmpty()) {
-                String fileName = saveFile(file);
-                product.setImageUrl(fileName);
-            }
-
-            productService.addProduct(product);
+            productService.addProduct(product, file);
         } catch (IOException e) {
             e.printStackTrace();
             model.addAttribute("errorMessage", "Có lỗi xảy ra trong quá trình lưu tệp.");
@@ -87,6 +75,7 @@ public class ProductController {
         model.addAttribute("suppliers", supplierService.getAllSuppliers());
         return "Admin/products/update-product";
     }
+
     @PostMapping("/edit/{id}")
     public String updateProduct(@PathVariable Long id,
                                 @Valid @ModelAttribute Product product,
@@ -101,51 +90,26 @@ public class ProductController {
         }
 
         try {
-            Product existingProduct = productService.getProductById(id)
-                    .orElseThrow(() -> new IllegalArgumentException("Invalid product Id:" + id));
-
-            if (!file.isEmpty()) {
-                String FileName = saveFile(file);
-                existingProduct.setImageUrl(FileName);
-            }
-
-            existingProduct.setProductName(product.getProductName());
-            existingProduct.setPrice(product.getPrice());
-            existingProduct.setDescription(product.getDescription());
-            existingProduct.setCategory(product.getCategory());
-            existingProduct.setSupplier(product.getSupplier());
-            existingProduct.setStockQuantity(product.getStockQuantity());
-            existingProduct.setPrescriptionRequired(product.isPrescriptionRequired());
-
-            productService.updateProduct(existingProduct);
-
+            productService.updateProduct(id, product, file);
         } catch (IOException e) {
             e.printStackTrace();
+            model.addAttribute("errorMessage", "Có lỗi xảy ra trong quá trình cập nhật sản phẩm.");
+            return "Admin/products/update-product";
         }
 
         return "redirect:/admin/products";
     }
-
 
     @PostMapping("/delete/{id}")
     public String deleteProduct(@PathVariable Long id) {
         productService.deleteProductById(id);
         return "redirect:/admin/products";
     }
-    @GetMapping("/products/search")
+
+    @GetMapping("/search")
     public String searchProducts(@RequestParam("keyword") String keyword, Model model) {
-        List<Product> searchResults = productService.searchByProductName(keyword);
+        List<Product> searchResults = productService.searchProducts(keyword);
         model.addAttribute("products", searchResults);
         return "Admin/products/product-list :: tbody";
-    }
-    private String saveFile(MultipartFile file) throws IOException {
-        String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
-        Path uploadDir = Paths.get(UPLOADED_FOLDER);
-        if (!Files.exists(uploadDir)) {
-            Files.createDirectories(uploadDir);
-        }
-        Path filePath = uploadDir.resolve(fileName);
-        Files.write(filePath, file.getBytes());
-        return fileName;
     }
 }
