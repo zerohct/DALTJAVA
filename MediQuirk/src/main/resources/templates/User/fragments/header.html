@@ -13,45 +13,47 @@
             <a class="btn" href="#">
                 <i class="bi bi-search text-zinc-700 dark:text-zinc-300"></i>
             </a>
-            <a class="btn" href="#">
+            <a class="btn" th:href="@{/cart}">
                 <i class="bi bi-cart3 text-zinc-700 dark:text-zinc-300"></i>
             </a>
-            <a class="btn d-none d-md-block bg-black text-white px-4 py-2 rounded-md" href="/login" sec:authorize="!isAuthenticated()">Login</a>
+            <a class="btn d-none d-md-block bg-black text-white px-4 py-2 rounded-md" href="/login"
+               sec:authorize="!isAuthenticated()">Login</a>
             <span class="nav-item position-relative" sec:authorize="isAuthenticated()" id="user-menu">
                 <span class="navbar-text user-icon">
                     <i class="bi bi-person-circle btn text-zinc-700 dark:text-zinc-300"></i>
                 </span>
                 <ul class="submenu list-unstyled mt-2">
                     <li>
-                        <span class="navbar-text flex">Xin chào, <span sec:authentication="name"></span></span>
+                        <span class="navbar-text d-flex justify-content-center align-items-center">
+                        Xin chào, <span class="ms-1" sec:authentication="name"></span>
+                    </span>
                     </li>
                     <li>
-                        <a href="#"><i class="bi bi-person icon"></i>UserProfile</a>
+                        <a th:href="@{/profile}"><i class="bi bi-person icon"></i>UserProfile</a>
                     </li>
                     <li>
                         <a href="#"><i class="bi bi-gear icon"></i>Setting</a>
                     </li>
-                    <li sec:authorize="hasRole('ADMIN')">
-                        <a href="#"><i class="bi bi-shield-lock icon"></i>Admin Page</a>
+                    <li sec:authorize="hasAuthority('ADMIN')">
+                        <a th:href="@{/admin}"><i class="bi bi-shield-lock icon"></i>Admin Page</a>
                     </li>
                     <li>
-                        <form th:action="@{/logout}" method="post">
-                            <button class="btn btn-link p-0" type="submit">
-                                <i class="bi bi-box-arrow-right icon"></i>Logout
-                            </button>
-                        </form>
+                        <a href="#" onclick="document.getElementById('logout-form').submit();">
+                            <i class="bi bi-box-arrow-right icon"></i>Logout
+                        </a>
+                        <form id="logout-form" th:action="@{/logout}" method="post" style="display: none;"></form>
                     </li>
                 </ul>
             </span>
             <button class="d-md-none text-zinc-700 dark:text-zinc-300">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                     xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M4 6h16M4 12h16m-7 6h7"></path>
                 </svg>
             </button>
         </div>
     </header>
-
-
 
 
 </nav>
