@@ -8,6 +8,8 @@ import com.app.MediQuirk.services.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -69,9 +71,17 @@ public class UserProfileController {
     }
 
     @GetMapping("/userprofiles")
-    public String listUserProfiles(Model model) {
-        List<UserProfile> userProfiles = userProfileService.getAllUserProfiles();
-        model.addAttribute("userProfiles", userProfiles);
+    public String listUserProfiles(Model model,
+                                   @RequestParam(defaultValue = "0") int page,
+                                   @RequestParam(defaultValue = "10") int size) {
+        PageRequest pageable = PageRequest.of(page, size);
+        Page<UserProfile> userProfilePage = userProfileService.getAllUserProfiles(pageable);
+
+        model.addAttribute("userProfiles", userProfilePage.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", userProfilePage.getTotalPages());
+        model.addAttribute("totalItems", userProfilePage.getTotalElements());
+
         return "Admin/userprofiles/userprofile-list";
     }
 

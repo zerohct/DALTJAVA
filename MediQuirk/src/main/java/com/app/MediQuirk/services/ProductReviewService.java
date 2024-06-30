@@ -1,25 +1,43 @@
 package com.app.MediQuirk.services;
 
+import com.app.MediQuirk.model.Product;
 import com.app.MediQuirk.model.ProductReview;
+import com.app.MediQuirk.model.Users;
+import com.app.MediQuirk.repository.ProductRepository;
 import com.app.MediQuirk.repository.ProductReviewRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
+@Transactional
 public class ProductReviewService {
-    @Autowired
-    private ProductReviewRepository reviewRepository;
+    private final ProductReviewRepository reviewRepository;
+    private final ProductRepository productRepository;
 
-    public ProductReview addReview(ProductReview review) {
+    public ProductReviewService(ProductReviewRepository reviewRepository, ProductRepository productRepository) {
+        this.reviewRepository = reviewRepository;
+        this.productRepository = productRepository;
+    }
+
+    public ProductReview addReview(Long productId, ProductReview review, Users user) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new RuntimeException("Product not found with id " + productId));
+
+        review.setProduct(product);
+        review.setUser(user);
         review.setReviewDate(LocalDateTime.now());
+
         return reviewRepository.save(review);
     }
 
-    public List<ProductReview> getReviewsByProduct(Long productId) {
-        return reviewRepository.findByProduct_ProductId(productId);
+    public Page<ProductReview> getReviewsByProductId(Long productId, Pageable pageable) {
+        return reviewRepository.findByProduct_ProductId(productId, pageable);
     }
 
     public List<ProductReview> getReviewsByUser(Long userId) {
@@ -41,5 +59,10 @@ public class ProductReviewService {
 
     public void deleteReview(Long reviewId) {
         reviewRepository.deleteById(reviewId);
+    }
+
+    public boolean isReviewOwnedByUser(Long reviewId, Users user) {
+        Optional<ProductReview> review = reviewRepository.findById(reviewId);
+        return review.map(r -> r.getUser().getUserId().equals(user.getUserId())).orElse(false);
     }
 }

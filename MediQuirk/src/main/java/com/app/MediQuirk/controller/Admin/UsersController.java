@@ -4,6 +4,9 @@ import com.app.MediQuirk.model.Users;
 import com.app.MediQuirk.services.RoleService;
 import com.app.MediQuirk.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -22,9 +25,20 @@ public class UsersController {
     private RoleService roleService;
 
     @GetMapping
-    public String getAllUsers(Model model) {
-        List<Users> users = usersService.getAllUsers();
-        model.addAttribute("users", users);
+    public String getAllUsers(Model model,
+                              @RequestParam(defaultValue = "0") int page,
+                              @RequestParam(defaultValue = "10") int size,
+                              @RequestParam(required = false) String search) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Users> userPage = usersService.getAllUsersPaginated(pageable);
+
+
+        model.addAttribute("users", userPage.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", userPage.getTotalPages());
+        model.addAttribute("totalItems", userPage.getTotalElements());
+        model.addAttribute("search", search);
+
         return "Admin/users/list";
     }
 

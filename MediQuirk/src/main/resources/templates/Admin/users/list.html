@@ -32,7 +32,7 @@
             <div class="flex items-center max-w-md">
                 <input type="text" id="searchInput"
                        class="w-full px-4 py-2 rounded-l-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                       placeholder="Search users...">
+                       placeholder="Search users..." th:value="${search}">
                 <button id="searchButton" class="bg-blue-500 text-white px-4 py-2 rounded-r-md hover:bg-blue-600 transition duration-300 ease-in-out">
                     <i class="bi bi-search"></i>
                 </button>
@@ -92,39 +92,61 @@
                         </a>
                     </td>
                 </tr>
-                <script>
-                    document.addEventListener('DOMContentLoaded', function() {
-                        const searchInput = document.getElementById('searchInput');
-                        const searchButton = document.getElementById('searchButton');
-                        const table = document.querySelector('table');
-                        const rows = table.querySelectorAll('tbody tr');
-
-                        function performSearch() {
-                            const searchTerm = searchInput.value.toLowerCase();
-
-                            rows.forEach(row => {
-                                const username = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
-                                if (username.includes(searchTerm)) {
-                                    row.style.display = '';
-                                } else {
-                                    row.style.display = 'none';
-                                }
-                            });
-                        }
-
-                        searchButton.addEventListener('click', performSearch);
-
-                        searchInput.addEventListener('keyup', function(event) {
-                            if (event.key === 'Enter') {
-                                performSearch();
-                            }
-                        });
-                    });
-                </script>
                 </tbody>
             </table>
         </div>
     </div>
+
+    <!-- Pagination -->
+    <div class="mt-4 flex justify-center">
+        <nav aria-label="Page navigation">
+            <ul class="flex list-style-none">
+                <li th:if="${currentPage > 0}" class="page-item">
+                    <a th:href="@{/admin/users(page=${currentPage - 1}, search=${search})}"
+                       class="page-link relative block py-1.5 px-3 rounded border-0 bg-transparent outline-none transition-all duration-300 rounded text-gray-800 hover:text-gray-800 hover:bg-gray-200 focus:shadow-none">
+                        Previous
+                    </a>
+                </li>
+                <li th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+                    th:class="${currentPage == i ? 'page-item active' : 'page-item'}">
+                    <a th:href="@{/admin/users(page=${i}, search=${search})}"
+                       th:text="${i + 1}"
+                       class="page-link relative block py-1.5 px-3 rounded border-0 bg-transparent outline-none transition-all duration-300 rounded text-gray-800 hover:text-gray-800 hover:bg-gray-200 focus:shadow-none"
+                       th:classappend="${currentPage == i ? 'bg-blue-500 ' : ''}"></a>
+                </li>
+                <li th:if="${currentPage < totalPages - 1}" class="page-item">
+                    <a th:href="@{/admin/users(page=${currentPage + 1}, search=${search})}"
+                       class="page-link relative block py-1.5 px-3 rounded border-0 bg-transparent outline-none transition-all duration-300 rounded text-gray-800 hover:text-gray-800 hover:bg-gray-200 focus:shadow-none">
+                        Next
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
+    <div class="mt-4 text-center text-sm text-gray-600">
+        Showing page [[${currentPage + 1}]] of [[${totalPages}]]
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('searchInput');
+            const searchButton = document.getElementById('searchButton');
+
+            function performSearch() {
+                const searchTerm = searchInput.value.toLowerCase();
+                window.location.href = `/admin/users?page=0&search=${encodeURIComponent(searchTerm)}`;
+            }
+
+            searchButton.addEventListener('click', performSearch);
+
+            searchInput.addEventListener('keyup', function(event) {
+                if (event.key === 'Enter') {
+                    performSearch();
+                }
+            });
+        });
+    </script>
 </section>
 </body>
 </html>

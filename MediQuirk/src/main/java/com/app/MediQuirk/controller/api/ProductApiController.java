@@ -55,8 +55,5 @@ public class ProductApiController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/search")
-    public List<Product> searchProducts(@RequestParam("term") String searchTerm) {
-        return productService.searchProducts(searchTerm);
-    }
+
 }

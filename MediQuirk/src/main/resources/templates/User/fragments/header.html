@@ -4,9 +4,24 @@
             <img th:src="@{/images/logo/logo1.png}" alt="MediQuirk" class="h-10">
             <p class="mb-0 ms-2 fs-4 text-zinc-700 dark:text-zinc-300">MediQuirk</p>
         </a>
+<!--        <nav class="d-none d-md-flex px-3 py-2 rounded-30">-->
+<!--            <a th:href="@{/}" class="text-zinc-700 dark:text-zinc-300 fs-4 mx-2">Trang chủ</a>-->
+<!--            <a href="#" class="text-zinc-700 dark:text-zinc-300 fs-4 mx-2">Danh mục</a>-->
+<!--            <a href="#" class="text-zinc-700 dark:text-zinc-300 fs-4 mx-2">About us</a>-->
+<!--        </nav>-->
+
         <nav class="d-none d-md-flex px-3 py-2 rounded-30">
             <a th:href="@{/}" class="text-zinc-700 dark:text-zinc-300 fs-4 mx-2">Trang chủ</a>
-            <a href="#" class="text-zinc-700 dark:text-zinc-300 fs-4 mx-2">Danh mục</a>
+            <div class="dropdown">
+                <a class="text-zinc-700 dark:text-zinc-300 fs-4 mx-2 dropdown-toggle" id="categoryDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                    Danh mục
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="categoryDropdown">
+                    <li th:each="category : ${categories}">
+                        <a class="dropdown-item" th:href="@{'/category/' + ${category.categoryId}}" th:text="${category.categoryName}"></a>
+                    </li>
+                </ul>
+            </div>
             <a href="#" class="text-zinc-700 dark:text-zinc-300 fs-4 mx-2">About us</a>
         </nav>
         <div class="d-flex align-items-center space-x-4 me-4">
