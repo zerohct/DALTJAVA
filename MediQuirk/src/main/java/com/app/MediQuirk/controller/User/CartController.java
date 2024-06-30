@@ -26,7 +26,7 @@ public class CartController {
             model.addAttribute("errorMessage", e.getMessage());
             return "redirect:/cart?error=" + e.getMessage();
         }
-        return "redirect:/cart";
+        return "redirect:/products/detail/" + productId;
     }
 
     @GetMapping
