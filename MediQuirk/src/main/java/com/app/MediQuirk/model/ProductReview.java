@@ -4,10 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.Set;
 
 @Entity
 @Data
@@ -19,12 +16,15 @@ public class ProductReview {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long reviewId;
 
-    @NotBlank
-    private String rating;
+    @NotNull
+    @Min(1)
+    @Max(5)
+    private Integer rating;
 
+    @Column(length = 1000)
     private String comment;
 
-    @NotBlank
+    @NotNull
     private LocalDateTime reviewDate;
 
     @ManyToOne(fetch = FetchType.LAZY)

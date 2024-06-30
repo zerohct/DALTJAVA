@@ -1,6 +1,7 @@
 package com.app.MediQuirk.services;
 
 import com.app.MediQuirk.model.Category;
+import com.app.MediQuirk.model.Product;
 import com.app.MediQuirk.repository.CategoryRepository;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
@@ -63,4 +64,5 @@ public class CategoryService {
         }
         categoryRepository.deleteById(id);
     }
+
 }

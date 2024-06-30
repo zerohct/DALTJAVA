@@ -8,6 +8,8 @@ import com.app.MediQuirk.repository.UserRepository;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -33,7 +35,9 @@ public class UserService implements UserDetailsService {
         user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
         userRepository.save(user);
     }
-
+    public Page<Users> getAllUsersPaginated(Pageable pageable) {
+        return usersRepository.findAll(pageable);
+    }
     @Override
     public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
         Users user = userRepository.findByUsernameOrEmailOrPhone(login, login, login)

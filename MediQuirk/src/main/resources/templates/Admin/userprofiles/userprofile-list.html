@@ -88,40 +88,72 @@
                         </a>
                     </td>
                 </tr>
-                <script>
-                    document.addEventListener('DOMContentLoaded', function() {
-                        const searchInput = document.getElementById('searchInput');
-                        const searchButton = document.getElementById('searchButton');
-                        const table = document.querySelector('table');
-                        const rows = table.querySelectorAll('tbody tr');
-
-                        function performSearch() {
-                            const searchTerm = searchInput.value.toLowerCase();
-
-                            rows.forEach(row => {
-                                const firstName = row.querySelector('td:nth-child(3)').textContent.toLowerCase();
-                                const lastName = row.querySelector('td:nth-child(4)').textContent.toLowerCase();
-                                if (firstName.includes(searchTerm) || lastName.includes(searchTerm)) {
-                                    row.style.display = '';
-                                } else {
-                                    row.style.display = 'none';
-                                }
-                            });
-                        }
-
-                        searchButton.addEventListener('click', performSearch);
-
-                        searchInput.addEventListener('keyup', function(event) {
-                            if (event.key === 'Enter') {
-                                performSearch();
-                            }
-                        });
-                    });
-                </script>
                 </tbody>
             </table>
         </div>
     </div>
+
+    <!-- Pagination -->
+    <div class="pagination mt-4 flex justify-center">
+        <nav aria-label="Page navigation">
+            <ul class="pagination flex">
+                <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                    <a class="page-link px-3 py-2 bg-gray-200 text-gray-700 rounded-l hover:bg-gray-300"
+                       th:href="@{/admin/userprofiles(page=${currentPage - 1})}" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                <li class="page-item" th:each="pageNum : ${#numbers.sequence(0, totalPages - 1)}"
+                    th:classappend="${pageNum == currentPage} ? 'active'">
+                    <a class="page-link px-3 py-2 bg-gray-200 text-gray-700 hover:bg-gray-300"
+                       th:href="@{/admin/userprofiles(page=${pageNum})}" th:text="${pageNum + 1}"></a>
+                </li>
+                <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+                    <a class="page-link px-3 py-2 bg-gray-200 text-gray-700 rounded-r hover:bg-gray-300"
+                       th:href="@{/admin/userprofiles(page=${currentPage + 1})}" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
+    <!-- Pagination info -->
+    <div class="mt-4 text-center text-gray-600">
+        Showing <span th:text="${userProfiles.size()}"></span> of <span th:text="${totalItems}"></span> items
+        (Page <span th:text="${currentPage + 1}"></span> of <span th:text="${totalPages}"></span>)
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('searchInput');
+            const searchButton = document.getElementById('searchButton');
+            const table = document.querySelector('table');
+            const rows = table.querySelectorAll('tbody tr');
+
+            function performSearch() {
+                const searchTerm = searchInput.value.toLowerCase();
+
+                rows.forEach(row => {
+                    const firstName = row.querySelector('td:nth-child(3)').textContent.toLowerCase();
+                    const lastName = row.querySelector('td:nth-child(4)').textContent.toLowerCase();
+                    if (firstName.includes(searchTerm) || lastName.includes(searchTerm)) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+            }
+
+            searchButton.addEventListener('click', performSearch);
+
+            searchInput.addEventListener('keyup', function(event) {
+                if (event.key === 'Enter') {
+                    performSearch();
+                }
+            });
+        });
+    </script>
 </section>
 </body>
 </html>

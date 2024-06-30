@@ -3,6 +3,9 @@ package com.app.MediQuirk.services;
 import com.app.MediQuirk.model.Product;
 import com.app.MediQuirk.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,12 +27,22 @@ public class ProductService {
     public List<Product> getAllProducts() {
         return productRepository.findAll();
     }
+    public Page<Product> getAllProductsPaginated(Pageable pageable) {
+        return productRepository.findAll(pageable);
+    }
+
+    // Search products by name with pagination
+    public Page<Product> searchProductsPaginated(String keyword, Pageable pageable) {
+        return productRepository.findByProductNameContainingIgnoreCase(keyword, pageable);
+    }
 
     // Retrieve all products including out of stock
     public List<Product> getAllProductsIncludingOutOfStock() {
         return productRepository.findAll();
     }
-
+    public Page<Product> getProductsByCategoryId(Long categoryId, PageRequest pageRequest) {
+        return productRepository.findByCategoryCategoryId(categoryId, pageRequest);
+    }
     // Retrieve a product by its id
     public Optional<Product> getProductById(Long id) {
         return productRepository.findById(id);
@@ -84,8 +97,5 @@ public class ProductService {
         productRepository.deleteById(id);
     }
 
-    // Search products by name
-    public List<Product> searchProducts(String keyword) {
-        return productRepository.findByProductNameContainingIgnoreCase(keyword);
-    }
+
 }

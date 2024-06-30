@@ -5,6 +5,9 @@ import com.app.MediQuirk.services.CategoryService;
 import com.app.MediQuirk.services.ProductService;
 import com.app.MediQuirk.services.SupplierService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import jakarta.validation.Valid;
@@ -29,8 +32,17 @@ public class ProductController {
     private SupplierService supplierService;
 
     @GetMapping
-    public String showProductList(Model model) {
-        model.addAttribute("products", productService.getAllProducts());
+    public String showProductList(Model model,
+                                  @RequestParam(defaultValue = "0") int page,
+                                  @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Product> productPage = productService.getAllProductsPaginated(pageable);
+
+        model.addAttribute("products", productPage.getContent());
+        model.addAttribute("currentPage", productPage.getNumber());
+        model.addAttribute("totalPages", productPage.getTotalPages());
+        model.addAttribute("totalItems", productPage.getTotalElements());
+
         return "Admin/products/product-list";
     }
 
@@ -106,10 +118,5 @@ public class ProductController {
         return "redirect:/admin/products";
     }
 
-    @GetMapping("/search")
-    public String searchProducts(@RequestParam("keyword") String keyword, Model model) {
-        List<Product> searchResults = productService.searchProducts(keyword);
-        model.addAttribute("products", searchResults);
-        return "Admin/products/product-list :: tbody";
-    }
+
 }

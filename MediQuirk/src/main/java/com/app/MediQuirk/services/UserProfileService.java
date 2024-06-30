@@ -5,6 +5,8 @@ import com.app.MediQuirk.model.Users;
 import com.app.MediQuirk.repository.UserProfileRepository;
 import com.app.MediQuirk.repository.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -35,4 +37,9 @@ public class UserProfileService {
     public void deleteUserProfileById(Long id) {
         userProfileRepository.deleteById(id);
     }
+
+    public Page<UserProfile> getAllUserProfiles(Pageable pageable) {
+        return userProfileRepository.findAll(pageable);
+    }
+
 }
