@@ -62,13 +62,25 @@ public class ProductDetailController {
         return "redirect:/products/detail/" + productId;
     }
 
-    @PostMapping("/review/edit")
-    public String editReview(@RequestParam Long productId, @ModelAttribute ProductReview productReview) {
-        Users currentUser = getCurrentUser();
-        if (currentUser != null && productReviewService.isReviewOwnedByUser(productReview.getReviewId(), currentUser)) {
-            productReviewService.updateReview(productReview);
+    @GetMapping("/review/edit/{id}")
+    public String showEditReviewForm(@PathVariable Long id, Model model) {
+        ProductReview review = productReviewService.getReviewById(id);
+        if (review != null && getCurrentUser().getUsername().equals(review.getUser().getUsername())) {
+            model.addAttribute("review", review);
+            return "/User/product/edit-review";
         }
-        return "redirect:/products/detail/" + productId;
+        return "redirect:/products/detail/" + review.getProduct().getProductId();
+    }
+
+    @PostMapping("/review/edit/{id}")
+    public String updateReview(@PathVariable Long id, @ModelAttribute ProductReview updatedReview) {
+        ProductReview existingReview = productReviewService.getReviewById(id);
+        if (existingReview != null && getCurrentUser().getUsername().equals(existingReview.getUser().getUsername())) {
+            existingReview.setRating(updatedReview.getRating());
+            existingReview.setComment(updatedReview.getComment());
+            productReviewService.updateReview(existingReview);
+        }
+        return "redirect:/products/detail/" + existingReview.getProduct().getProductId();
     }
 
     @PostMapping("/review/delete/{id}")

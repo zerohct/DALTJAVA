@@ -65,4 +65,7 @@ public class ProductReviewService {
         Optional<ProductReview> review = reviewRepository.findById(reviewId);
         return review.map(r -> r.getUser().getUserId().equals(user.getUserId())).orElse(false);
     }
+    public Page<ProductReview> getAllReviews(Pageable pageable) {
+        return reviewRepository.findAll(pageable);
+    }
 }

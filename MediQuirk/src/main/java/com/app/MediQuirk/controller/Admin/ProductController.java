@@ -1,13 +1,16 @@
 package com.app.MediQuirk.controller.Admin;
 
 import com.app.MediQuirk.model.Product;
+import com.app.MediQuirk.model.ProductReview;
 import com.app.MediQuirk.services.CategoryService;
+import com.app.MediQuirk.services.ProductReviewService;
 import com.app.MediQuirk.services.ProductService;
 import com.app.MediQuirk.services.SupplierService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import jakarta.validation.Valid;
@@ -30,6 +33,11 @@ public class ProductController {
 
     @Autowired
     private SupplierService supplierService;
+
+    @Autowired
+    private ProductReviewService reviewService;
+
+
 
     @GetMapping
     public String showProductList(Model model,
@@ -117,6 +125,20 @@ public class ProductController {
         productService.deleteProductById(id);
         return "redirect:/admin/products";
     }
+    @GetMapping("/reviews")
+    public String getAllReviews(Model model,
+                                @RequestParam(defaultValue = "0") int page,
+                                @RequestParam(defaultValue = "10") int size) {
 
+        Pageable pageable = PageRequest.of(page, size, Sort.by("reviewDate").descending());
+        Page<ProductReview> reviewPage = reviewService.getAllReviews(pageable);
+
+        model.addAttribute("reviews", reviewPage.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", reviewPage.getTotalPages());
+        model.addAttribute("totalItems", reviewPage.getTotalElements());
+
+        return "Admin/products/reviews";
+    }
 
 }
