@@ -103,7 +103,7 @@ public class UserController {
 
     @PostMapping("/profile/update")
     public String updateUserProfile(@ModelAttribute UserProfile userProfile,
-                                    @RequestParam("file") MultipartFile file,
+                                    @RequestParam(value = "file", required = false) MultipartFile file,
                                     RedirectAttributes redirectAttributes) {
         try {
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -126,11 +126,12 @@ public class UserController {
                 existingProfile.setDateOfBirth(userProfile.getDateOfBirth());
                 existingProfile.setAddress(userProfile.getAddress());
 
-                if (!file.isEmpty()) {
-                    userProfileService.updateUserProfileWithAvatar(existingProfile, file, true);
-                } else {
-                    userProfileService.updateUserProfile(existingProfile);
+                if (file != null && !file.isEmpty()) {
+                    String newAvatarUrl = userProfileService.updateUserProfileWithAvatar(existingProfile, file);
+                    existingProfile.setProfilePictureUrl(newAvatarUrl);
                 }
+
+                userProfileService.updateUserProfile(existingProfile);
 
                 redirectAttributes.addFlashAttribute("successMessage", "Profile updated successfully!");
             } else {
@@ -161,7 +162,10 @@ public class UserController {
                     userProfile.setUser(user);
                 }
 
-                userProfileService.updateUserProfileWithAvatar(userProfile, file, false);
+                String newAvatarUrl = userProfileService.updateUserProfileWithAvatar(userProfile, file);
+                userProfile.setProfilePictureUrl(newAvatarUrl);
+                userProfileService.updateUserProfile(userProfile);
+
                 redirectAttributes.addFlashAttribute("successMessage", "Avatar updated successfully!");
             } else {
                 redirectAttributes.addFlashAttribute("errorMessage", "User not found.");
@@ -174,26 +178,7 @@ public class UserController {
         return "redirect:/profile";
     }
 
-    @PostMapping("/profile/remove-avatar")
-    public String removeAvatar(RedirectAttributes redirectAttributes) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String username = auth.getName();
-        Optional<Users> optionalUser = userService.findByUsername(username);
 
-        if (optionalUser.isPresent()) {
-            Users user = optionalUser.get();
-            UserProfile userProfile = user.getUserProfile();
-
-            if (userProfile != null) {
-                userProfileService.removeAvatar(userProfile);
-                redirectAttributes.addFlashAttribute("successMessage", "Avatar removed successfully!");
-            }
-        } else {
-            redirectAttributes.addFlashAttribute("errorMessage", "User not found.");
-        }
-
-        return "redirect:/profile";
-    }
 
     private String saveFile(MultipartFile file) throws IOException {
         String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
