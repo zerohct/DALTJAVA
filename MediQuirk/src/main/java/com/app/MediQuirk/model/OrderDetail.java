@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
 
+import java.math.BigDecimal;
+
 @Entity
 @Data
 @NoArgsConstructor
@@ -17,8 +19,9 @@ public class OrderDetail {
     @NotNull
     private int quantity;
 
-    @NotBlank
-    private String unitPrice;
+    @NotNull
+    @DecimalMin(value = "0.01")
+    private BigDecimal unitPrice;
 
     private String discount;
 

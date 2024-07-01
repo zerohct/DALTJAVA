@@ -3,6 +3,8 @@ package com.app.MediQuirk.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
+
+import java.math.BigDecimal;
 import java.util.Set;
 
 @Entity
@@ -15,12 +17,18 @@ public class Orders {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long orderId;
 
+    @Column(unique = true)
+    @NotBlank
+    private String orderNumber;
+
     @NotBlank
     private String orderDate;
 
-    @NotBlank
-    private String totalAmount;
+    @NotNull
+    @DecimalMin(value = "0.0", inclusive = false)
+    private BigDecimal totalAmount;
 
+    @NotBlank
     private String orderStatus;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -30,8 +38,6 @@ public class Orders {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<OrderDetail> orderDetails;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "paymentMethodId")
-    private PaymentMethod paymentMethod;
-
+    @OneToOne(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Payment payment;
 }

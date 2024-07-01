@@ -34,24 +34,7 @@ public class ProductDetailController {
         this.userService = userService;
     }
 
-//    @GetMapping("/detail/{id}")
-//    public String showProductDetail(@PathVariable Long id,
-//                                    @RequestParam(defaultValue = "0") int page,
-//                                    @RequestParam(defaultValue = "6") int size,
-//                                    Model model) {
-//        Product product = productService.getProductById(id)
-//                .orElseThrow(() -> new IllegalArgumentException("Invalid product Id:" + id));
-//
-//        Page<ProductReview> reviewPage = productReviewService.getReviewsByProductId(id, PageRequest.of(page, size));
-//
-//        model.addAttribute("product", product);
-//        model.addAttribute("reviewPage", reviewPage);
-//        model.addAttribute("productReview", new ProductReview());
-//        model.addAttribute("categories", categoryService.getAllCategories());
-//        model.addAttribute("suppliers", supplierService.getAllSuppliers());
-//
-//        return "/User/product/detail";
-//    }
+
 
     @GetMapping("/detail/{id}")
     public String showProductDetail(@PathVariable Long id,
