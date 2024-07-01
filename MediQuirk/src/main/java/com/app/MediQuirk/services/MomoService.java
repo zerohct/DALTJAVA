@@ -1,97 +1,100 @@
-//package com.app.MediQuirk.services;
-//
-//@Service
-//@Slf4j
-//public class MomoService {
-//
-//    @Value("${momo.endpoint}")
-//    private String endpoint;
-//
-//    @Value("${momo.partner-code}")
-//    private String partnerCode;
-//
-//    @Value("${momo.access-key}")
-//    private String accessKey;
-//
-//    @Value("${momo.secret-key}")
-//    private String secretKey;
-//
-//    @Value("${momo.redirect-url}")
-//    private String redirectUrl;
-//
-//    @Value("${momo.ipn-url}")
-//    private String ipnUrl;
-//
-//    public MomoResponse createPayment(PaymentRequest request) throws Exception {
-//        String requestId = String.valueOf(System.currentTimeMillis());
-//        String orderInfo = "Thanh toan don hang " + request.getOrderId();
-//        String rawHash = "partnerCode=" + partnerCode +
-//                "&accessKey=" + accessKey +
-//                "&requestId=" + requestId +
-//                "&amount=" + request.getAmount() +
-//                "&orderId=" + request.getOrderId() +
-//                "&orderInfo=" + orderInfo +
-//                "&redirectUrl=" + redirectUrl +
-//                "&ipnUrl=" + ipnUrl;
-//
-//        String signature = createSignature(rawHash);
-//
-//        JSONObject json = new JSONObject();
-//        json.put("partnerCode", partnerCode);
-//        json.put("accessKey", accessKey);
-//        json.put("requestId", requestId);
-//        json.put("amount", request.getAmount());
-//        json.put("orderId", request.getOrderId());
-//        json.put("orderInfo", orderInfo);
-//        json.put("redirectUrl", redirectUrl);
-//        json.put("ipnUrl", ipnUrl);
-//        json.put("requestType", "captureMoMoWallet");
-//        json.put("extraData", "");
-//        json.put("lang", "vi");
-//        json.put("signature", signature);
-//
-//        String responseData = callMoMoAPI(json.toString());
-//
-//        ObjectMapper mapper = new ObjectMapper();
-//        return mapper.readValue(responseData, MomoResponse.class);
-//    }
-//
-//    private String createSignature(String rawHash) throws Exception {
-//        Mac hmacSHA256 = Mac.getInstance("HmacSHA256");
-//        SecretKeySpec secretKeySpec = new SecretKeySpec(secretKey.getBytes(), "HmacSHA256");
-//        hmacSHA256.init(secretKeySpec);
-//        byte[] hashBytes = hmacSHA256.doFinal(rawHash.getBytes());
-//        return bytesToHex(hashBytes);
-//    }
-//
-//    private String bytesToHex(byte[] bytes) {
-//        StringBuilder sb = new StringBuilder();
-//        for (byte b : bytes) {
-//            sb.append(String.format("%02x", b));
-//        }
-//        return sb.toString();
-//    }
-//
-//    private String callMoMoAPI(String jsonString) throws IOException {
-//        URL url = new URL(endpoint);
-//        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-//        conn.setRequestMethod("POST");
-//        conn.setRequestProperty("Content-Type", "application/json");
-//        conn.setDoOutput(true);
-//
-//        try (OutputStream os = conn.getOutputStream()) {
-//            os.write(jsonString.getBytes());
-//            os.flush();
-//        }
-//
-//        StringBuilder response = new StringBuilder();
-//        try (BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
-//            String line;
-//            while ((line = br.readLine()) != null) {
-//                response.append(line);
-//            }
-//        }
-//
-//        return response.toString();
-//    }
-//}
+package com.app.MediQuirk.services;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.codec.binary.Hex;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.TreeMap;
+
+@Service
+public class MomoService {
+
+    private final String endpoint = "https://test-payment.momo.vn/v2/gateway/api/create";
+    private final String partnerCode = "MOMOOJOI20210710";
+    private final String accessKey = "iPXneGmrJH0G8FOP";
+    private final String secretKey = "sFcbSGRSJjwGxwhhcEktCHWYUuTuPNDB";
+    private final String returnUrl = "http://localhost:8080/payment/momo-return";
+    private final String ipnUrl = "http://localhost:8080/payment/momo-ipn";
+
+    @Autowired
+    private CartService cartService;
+
+    public String createPaymentUrl(String orderId, String orderInfo) throws IOException, NoSuchAlgorithmException, InvalidKeyException {
+        String requestId = String.valueOf(System.currentTimeMillis());
+        long amount = cartService.getTotalPrice().setScale(0, RoundingMode.HALF_UP).longValue();
+        String orderType = "momo_wallet";
+
+        Map<String, String> rawData = new TreeMap<>();
+        rawData.put("partnerCode", partnerCode);
+        rawData.put("accessKey", accessKey);
+        rawData.put("requestId", requestId);
+        rawData.put("amount", String.valueOf(amount));
+        rawData.put("orderId", orderId);
+        rawData.put("orderInfo", orderInfo);
+        rawData.put("returnUrl", returnUrl);
+        rawData.put("notifyUrl", ipnUrl);
+        rawData.put("extraData", "");
+        rawData.put("requestType", orderType);
+
+        StringBuilder rawSignature = new StringBuilder();
+        for (Map.Entry<String, String> entry : rawData.entrySet()) {
+            rawSignature.append(entry.getKey()).append("=").append(entry.getValue()).append("&");
+        }
+        rawSignature.deleteCharAt(rawSignature.length() - 1);
+
+        String signature = calculateHMAC(rawSignature.toString(), secretKey);
+
+        rawData.put("signature", signature);
+
+        StringBuilder paymentUrlBuilder = new StringBuilder(endpoint).append("?");
+        for (Map.Entry<String, String> entry : rawData.entrySet()) {
+            paymentUrlBuilder.append(URLEncoder.encode(entry.getKey(), "UTF-8"))
+                    .append("=")
+                    .append(URLEncoder.encode(entry.getValue(), "UTF-8"))
+                    .append("&");
+        }
+        paymentUrlBuilder.deleteCharAt(paymentUrlBuilder.length() - 1);
+
+        return paymentUrlBuilder.toString();
+    }
+
+
+    private String calculateHMAC(String data, String key) throws NoSuchAlgorithmException, InvalidKeyException {
+        Mac sha256_HMAC = Mac.getInstance("HmacSHA256");
+        SecretKeySpec secret_key = new SecretKeySpec(key.getBytes(StandardCharsets.UTF_8), "HmacSHA256");
+        sha256_HMAC.init(secret_key);
+        return Hex.encodeHexString(sha256_HMAC.doFinal(data.getBytes(StandardCharsets.UTF_8)));
+    }
+
+    public boolean verifySignature(Map<String, String> fields) throws NoSuchAlgorithmException, InvalidKeyException {
+        String signatureReceived = fields.get("signature");
+        fields.remove("signature");
+
+        Map<String, String> sortedFields = new TreeMap<>(fields);
+
+        StringBuilder data = new StringBuilder();
+        for (Map.Entry<String, String> entry : sortedFields.entrySet()) {
+            data.append(entry.getKey()).append("=").append(entry.getValue()).append("&");
+        }
+        data.deleteCharAt(data.length() - 1);
+
+        String signatureCalculated = calculateHMAC(data.toString(), secretKey);
+        return signatureCalculated.equals(signatureReceived);
+    }
+}

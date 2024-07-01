@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
 
+import java.math.BigDecimal;
+
 @Entity
 @Data
 @NoArgsConstructor
@@ -17,16 +19,13 @@ public class Payment {
     @NotBlank
     private String paymentDate;
 
-    @NotBlank
-    private String amount;
+    @NotNull
+    @DecimalMin(value = "0.0", inclusive = false)
+    private BigDecimal amount;
 
     private String paymentStatus;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "orderId")
     private Orders order;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "paymentMethodId")
-    private PaymentMethod paymentMethod;
 }

@@ -10,5 +10,29 @@
     <script  th:src="@{~/js/user/review.js}"></script>
     <script  th:src="@{~/js/user/app.js}"></script>
     <script  th:src="@{~/js/user/profile.js}"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const codRadio = document.getElementById("cod");
+            const momoRadio = document.getElementById("momo");
 
+            const updateButtonText = () => {
+                const submitButton = document.querySelector("button[type=submit]");
+                if (codRadio.checked) {
+                    submitButton.textContent = "Thanh Toán Ngay";
+                    submitButton.classList.remove("btn-success");
+                    submitButton.classList.add("btn-primary");
+                } else if (momoRadio.checked) {
+                    submitButton.textContent = "Thanh Toán Với MOMO";
+                    submitButton.classList.remove("btn-primary");
+                    submitButton.classList.add("btn-success");
+                }
+            };
+
+            codRadio.addEventListener("change", updateButtonText);
+            momoRadio.addEventListener("change", updateButtonText);
+
+            // Initial check
+            updateButtonText();
+        });
+    </script>
 </div>
