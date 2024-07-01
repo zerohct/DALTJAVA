@@ -68,4 +68,18 @@ public class ProductReviewService {
     public Page<ProductReview> getAllReviews(Pageable pageable) {
         return reviewRepository.findAll(pageable);
     }
+    public double getAverageRatingForProduct(Long productId) {
+        Pageable unpaged = Pageable.unpaged();
+        Page<ProductReview> reviewPage = reviewRepository.findByProduct_ProductId(productId, unpaged);
+        List<ProductReview> reviews = reviewPage.getContent();
+        if (reviews.isEmpty()) {
+            return 0.0;
+        }
+        double sum = reviews.stream().mapToInt(ProductReview::getRating).sum();
+        return sum / reviews.size();
+    }
+
+    public long getTotalReviewsForProduct(Long productId) {
+        return reviewRepository.countByProduct_ProductId(productId);
+    }
 }

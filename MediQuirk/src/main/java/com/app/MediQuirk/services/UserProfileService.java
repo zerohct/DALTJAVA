@@ -1,9 +1,7 @@
 package com.app.MediQuirk.services;
 
 import com.app.MediQuirk.model.UserProfile;
-import com.app.MediQuirk.model.Users;
 import com.app.MediQuirk.repository.UserProfileRepository;
-import com.app.MediQuirk.repository.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,7 +19,7 @@ public class UserProfileService {
     private UserProfileRepository userProfileRepository;
 
     @Autowired
-    private  testservice fileStorageService;
+    private TestService fileStorageService;
 
 
     public UserProfile addUserProfile(UserProfile userProfile) {
@@ -47,12 +45,14 @@ public class UserProfileService {
     public Page<UserProfile> getAllUserProfiles(Pageable pageable) {
         return userProfileRepository.findAll(pageable);
     }
-    public UserProfile updateUserProfileWithAvatar(UserProfile userProfile, MultipartFile avatar, boolean useExternalStorage) throws IOException {
+    public String updateUserProfileWithAvatar(UserProfile userProfile, MultipartFile avatar) throws IOException {
         if (avatar != null && !avatar.isEmpty()) {
-            String avatarUrl = fileStorageService.storeFile(avatar, useExternalStorage);
+            String avatarUrl = fileStorageService.storeFile(avatar);
             userProfile.setProfilePictureUrl(avatarUrl);
+            userProfileRepository.save(userProfile);
+            return avatarUrl;
         }
-        return userProfileRepository.save(userProfile);
+        return null;
     }
 
     public UserProfile removeAvatar(UserProfile userProfile) {

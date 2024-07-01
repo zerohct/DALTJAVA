@@ -22,13 +22,10 @@
                 <h2 class="text-xl text-gray-600 italic mb-4" th:text="${product.category.categoryName}">Category Name</h2>
                 <div class="flex items-center mb-4">
                     <div class="flex text-yellow-400">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star-half-alt"></i>
+                        <i th:each="star : ${#numbers.sequence(1, 5)}"
+                           th:class="${star <= averageRating ? 'bi bi-star-fill' : (star <= averageRating + 0.5 ? 'bi bi-star-half' : 'bi bi-star')}"></i>
                     </div>
-                    <span class="ml-2 text-gray-600">(786 reviews)</span>
+                    <span class="ml-2 text-gray-600" th:text="'(' + ${totalReviews} + ' reviews)'"></span>
                 </div>
                 <p class="text-gray-700 mb-4" th:text="${product.description}">Product description goes here.</p>
                 <div class="text-3xl font-bold mb-4" th:text="${product.price + ' Đồng'}">Price</div>
@@ -105,7 +102,6 @@
                         <div>
                             <label for="editRating" class="block text-sm font-medium text-gray-700">Rating</label>
                             <div class="flex items-center">
-
                                 <div class="rating-container">
                                     <input type="hidden" id="editRating" name="rating" class="rating-input" th:value="${review.rating}" />
                                     <div class="flex text-3xl cursor-pointer text-yellow-400">
